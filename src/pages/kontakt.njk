@@ -1,10 +1,57 @@
 {% extends "layouts/base.njk" %}
 {% set title = "Kontakt" %}
+{% set description = "Võta Slow Pouriga ühendust — Roostiku 12, Tallinn. Kirjuta meile või tule röstikotta külla." %}
 {% block content %}
-{# KONTAKTIVORM — name, email, message + success state. #}
-<section class="contact">
-  <form class="contact-form" novalidate>
-    <!-- nimi, e-post, sõnum, saada nupp + edukuse teade -->
-  </form>
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="eyebrow eyebrow--on-dark">Võta ühendust</span>
+    <h1 class="page-head__title">Kontakt</h1>
+    <p class="page-head__sub">Küsimused, koostöö või lihtsalt tere — kirjuta meile.</p>
+  </div>
 </section>
+
+<section class="section">
+  <div class="wrap contact">
+    <div class="contact__info">
+      <span class="eyebrow">Röstikoda</span>
+      <h2>Tule külla</h2>
+      <p class="contact__lead">
+        Meie röstimiskoda on avatud laupäeviti. Tule, kuula röstri helisid, tunne lõhna
+        — ja mine aeglaselt.
+      </p>
+      <ul class="contact__list">
+        <li><span class="contact__k">Aadress</span><span>Roostiku 12, Tallinn</span></li>
+        <li><span class="contact__k">E-post</span><a href="mailto:tere@slowpour.ee">tere@slowpour.ee</a></li>
+        <li><span class="contact__k">Telefon</span><span class="num">+372 5xx xxxx</span></li>
+        <li><span class="contact__k">Lahti</span><span>E–R 8–18 · L 9–16 · P suletud</span></li>
+      </ul>
+    </div>
+
+    <div class="contact__form-wrap">
+      <form id="contact-form" class="form" novalidate>
+        <label class="field">
+          <span>Nimi</span>
+          <input type="text" name="nimi" autocomplete="name" />
+          <span class="field__error" aria-live="polite"></span>
+        </label>
+        <label class="field">
+          <span>E-post</span>
+          <input type="email" name="email" autocomplete="email" />
+          <span class="field__error" aria-live="polite"></span>
+        </label>
+        <label class="field">
+          <span>Sõnum</span>
+          <textarea name="sonum" rows="5"></textarea>
+          <span class="field__error" aria-live="polite"></span>
+        </label>
+        <button type="submit" class="btn btn--primary">Saada</button>
+      </form>
+      <div id="contact-success" class="form__success" role="status" hidden>
+        <strong>Aitäh!</strong> Võtame sinuga peagi ühendust.
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

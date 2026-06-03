@@ -1,10 +1,74 @@
 {% extends "layouts/base.njk" %}
-{% set title = "Tellimus" %}
+{% set title = "Telli kohvi" %}
+{% set description = "Telli Slow Pour kohvi — vali sort, kogus ja jahvatus. Tasuta tarne tellimustelt 35 €." %}
 {% block content %}
-{# TELLIMUSLEHT — quantity, grind, delivery details, summary. #}
-<section class="order">
-  <form class="order-form" novalidate>
-    <!-- kogus, jahvatuse valik, tarneandmed, tellimuse kokkuvõte -->
-  </form>
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="eyebrow eyebrow--on-dark">Telli</span>
+    <h1 class="page-head__title">Telli kohvi</h1>
+    <p class="page-head__sub">Vali sort, kogus ja jahvatus — toome värske kohvi sinuni.</p>
+  </div>
 </section>
+
+<section class="section">
+  <div class="wrap order">
+    <form id="order-form" class="form order__form" novalidate>
+      <fieldset class="order__group">
+        <legend>Toode</legend>
+        <label class="field">
+          <span>Kohvisort</span>
+          <select name="coffee"></select>
+        </label>
+        <div class="order__row">
+          <div class="field">
+            <span>Kogus</span>
+            <div class="qty">
+              <button type="button" class="qty__btn" data-qty="-1" aria-label="Vähenda kogust">−</button>
+              <input class="qty__input num" type="number" name="qty" value="1" min="1" inputmode="numeric" aria-label="Kogus" />
+              <button type="button" class="qty__btn" data-qty="1" aria-label="Suurenda kogust">+</button>
+            </div>
+          </div>
+          <label class="field">
+            <span>Jahvatus</span>
+            <select name="grind">
+              <option>Terved oad</option>
+              <option>Espresso (peen)</option>
+              <option>Filter (keskmine)</option>
+              <option>French press (jäme)</option>
+              <option>Turkki (väga peen)</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="order__group">
+        <legend>Tarneandmed</legend>
+        <label class="field"><span>Nimi</span><input type="text" name="nimi" autocomplete="name" required /><span class="field__error" aria-live="polite"></span></label>
+        <label class="field"><span>Aadress</span><input type="text" name="aadress" autocomplete="street-address" required /><span class="field__error" aria-live="polite"></span></label>
+        <div class="order__row">
+          <label class="field"><span>Linn</span><input type="text" name="linn" autocomplete="address-level2" required /><span class="field__error" aria-live="polite"></span></label>
+          <label class="field"><span>Indeks</span><input type="text" name="indeks" inputmode="numeric" autocomplete="postal-code" required /><span class="field__error" aria-live="polite"></span></label>
+        </div>
+        <label class="field"><span>Telefon</span><input type="tel" name="tel" autocomplete="tel" required /><span class="field__error" aria-live="polite"></span></label>
+      </fieldset>
+
+      <button type="submit" class="btn btn--primary">Telli</button>
+    </form>
+
+    <aside class="order-summary" aria-label="Tellimuse kokkuvõte">
+      <h2 class="order-summary__title">Kokkuvõte</h2>
+      <div class="order-summary__row"><span id="sum-item">—</span><span>× <span class="num" id="sum-qty">1</span></span></div>
+      <div class="order-summary__row muted"><span>Ühiku hind</span><span class="num" id="sum-unit">€0.00</span></div>
+      <div class="order-summary__row"><span>Vahesumma</span><span class="num" id="sum-sub">€0.00</span></div>
+      <div class="order-summary__row"><span>Tarne</span><span class="num" id="sum-ship">€3.50</span></div>
+      <div class="order-summary__row order-summary__total"><span>Kokku</span><span class="num" id="sum-total">€0.00</span></div>
+      <p class="order-summary__note">Tasuta tarne tellimustelt 35 €.</p>
+      <div id="order-success" class="form__success" role="status" hidden>
+        <strong>Aitäh!</strong> Tellimus on vastu võetud.
+      </div>
+    </aside>
+  </div>
+</section>
+
 {% endblock %}

@@ -11,6 +11,23 @@ toggle?.addEventListener("click", () => {
   console.log(`[theme] -> ${isDark ? "dark" : "light"}`);
 });
 
+/* ---- Mobile nav toggle --------------------------------------------------- */
+const navToggle = document.getElementById("nav-toggle");
+const siteNav = document.querySelector(".site-nav");
+navToggle?.addEventListener("click", () => {
+  const open = siteNav.classList.toggle("nav-open");
+  navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  navToggle.setAttribute("aria-label", open ? "Sulge menüü" : "Ava menüü");
+});
+
+/* ---- Mark the current page in the nav ------------------------------------ */
+(() => {
+  const here = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".nav-menu a").forEach((a) => {
+    if (a.getAttribute("href") === here) a.setAttribute("aria-current", "page");
+  });
+})();
+
 /* ---- Coffee data loader -------------------------------------------------- */
 export async function loadCoffees() {
   try {
@@ -191,3 +208,122 @@ async function initDetail() {
   console.log(`[detail] id=${id} -> ${c.nimi}; related ${related.length}`);
 }
 initDetail();
+
+/* ---- Contact page (Kontakt): client-side validation + success ------------ */
+function setFieldError(input, message) {
+  const wrap = input.closest(".field");
+  const err = wrap.querySelector(".field__error");
+  if (message) {
+    wrap.classList.add("field--error");
+    if (err) err.textContent = message;
+    input.setAttribute("aria-invalid", "true");
+  } else {
+    wrap.classList.remove("field--error");
+    if (err) err.textContent = "";
+    input.removeAttribute("aria-invalid");
+  }
+}
+function initContact() {
+  const form = document.getElementById("contact-form");
+  if (!form) return;
+  const success = document.getElementById("contact-success");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const checks = [
+      ["nimi", (v) => v.trim().length >= 2, "Palun sisesta oma nimi."],
+      ["email", (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v), "Palun sisesta korrektne e-post."],
+      ["sonum", (v) => v.trim().length >= 5, "Palun kirjuta sõnum (vähemalt 5 tähemärki)."],
+    ];
+    let ok = true;
+    checks.forEach(([name, test, msg]) => {
+      const input = form.elements[name];
+      const valid = test(input.value);
+      if (!valid) ok = false;
+      setFieldError(input, valid ? "" : msg);
+    });
+    console.log(`[contact] submit valid=${ok}`);
+    if (ok) { form.hidden = true; success.hidden = false; }
+  });
+}
+initContact();
+
+/* ---- Order page (Tellimus): coffee picker + qty + live summary ----------- */
+async function initOrder() {
+  const form = document.getElementById("order-form");
+  if (!form) return;
+  const all = await loadCoffees();
+  if (!all.length) return;
+
+  const select = form.elements["coffee"];
+  select.innerHTML = all
+    .map((c) => `<option value="${c.id}">${c.nimi} — €${Number(c.hind).toFixed(2)}</option>`)
+    .join("");
+  const preId = Number(getParam("id"));
+  if (preId && all.some((c) => c.id === preId)) select.value = String(preId);
+
+  const qtyInput = form.elements["qty"];
+  const FREE_SHIP = 35;
+  const SHIP = 3.5;
+  const el = (id) => document.getElementById(id);
+
+  function render() {
+    const c = all.find((x) => x.id === Number(select.value)) || all[0];
+    const qty = Math.max(1, Number(qtyInput.value) || 1);
+    const unit = Number(c.hind);
+    const sub = unit * qty;
+    const ship = sub >= FREE_SHIP ? 0 : SHIP;
+    el("sum-item").textContent = c.nimi;
+    el("sum-qty").textContent = qty;
+    el("sum-unit").textContent = `€${unit.toFixed(2)}`;
+    el("sum-sub").textContent = `€${sub.toFixed(2)}`;
+    el("sum-ship").textContent = ship === 0 ? "Tasuta" : `€${ship.toFixed(2)}`;
+    el("sum-total").textContent = `€${(sub + ship).toFixed(2)}`;
+    console.log(`[order] ${c.nimi} x${qty} sub=${sub.toFixed(2)} ship=${ship} total=${(sub + ship).toFixed(2)}`);
+  }
+
+  select.addEventListener("change", render);
+  qtyInput.addEventListener("input", render);
+  form.querySelectorAll("[data-qty]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      qtyInput.value = Math.max(1, (Number(qtyInput.value) || 1) + Number(btn.dataset.qty));
+      render();
+    })
+  );
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let ok = true;
+    form.querySelectorAll("[required]").forEach((inp) => {
+      const valid = inp.value.trim().length > 0;
+      if (!valid) ok = false;
+      setFieldError(inp, valid ? "" : "Kohustuslik väli.");
+    });
+    console.log(`[order] submit valid=${ok}`);
+    if (ok) { form.hidden = true; el("order-success").hidden = false; }
+  });
+  render();
+}
+initOrder();
+
+/* ---- Scroll reveals (IntersectionObserver, reduced-motion aware) --------- */
+function initReveals() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!("IntersectionObserver" in window)) return;
+  const sel = ".section-head, .mission__text, .mission__media, .events, .popular__head, .cta-band__inner, .contact__info, .contact__form-wrap, .order__form, .order-summary, .detail__media, .detail__info";
+  const els = document.querySelectorAll(sel);
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+  els.forEach((el) => {
+    el.classList.add("reveal");
+    io.observe(el);
+  });
+}
+initReveals();

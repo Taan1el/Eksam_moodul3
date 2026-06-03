@@ -7,7 +7,7 @@
       <span class="brand__name">Slow Pour</span>
     </a>
 
-    <nav class="nav-menu" aria-label="Peamenüü">
+    <nav class="nav-menu" id="nav-menu" aria-label="Peamenüü">
       <ul>
         <li><a href="index.html">Avaleht</a></li>
         <li><a href="kohvisordid.html">Kohvisordid</a></li>
@@ -17,10 +17,17 @@
       </ul>
     </nav>
 
-    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Vaheta tume ja hele teema">
-      <svg class="theme-toggle__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
-      </svg>
-    </button>
+    <div class="site-nav__actions">
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Vaheta tume ja hele teema">
+        <svg class="theme-toggle__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+        </svg>
+      </button>
+      <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Ava menüü" aria-expanded="false" aria-controls="nav-menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
+    </div>
   </div>
 </header>

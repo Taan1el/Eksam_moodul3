@@ -13,9 +13,10 @@
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main">Liigu sisu juurde</a>
     {% include "components/nav.njk" %}
 
-    <main>
+    <main id="main">
       {% block content %}{% endblock %}
     </main>
 
