@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "nimi": "Aeglane Hommik",
+    "paritolu": "Etioopia, Yirgacheffe",
+    "rostitase": "Hele",
+    "maitseprofiil": ["õistaim", "sidrun", "mesi"],
+    "hind": 13.50,
+    "kaal": "250 g",
+    "kirjeldus": "Erefilmijaama oad Yirgacheffe mägedelt. Õrn ja lilleline, sidruse särtsuga. Parim käsitsi valatuna (V60), kus selle õie- ja mesinoodid avanevad täielikult.",
+    "pilt": "coffee-light.webp"
+  },
+  {
+    "id": 2,
+    "nimi": "Laisa Päeva Blend",
+    "paritolu": "Brasiilia + Colombia",
+    "rostitase": "Keskmine",
+    "maitseprofiil": ["šokolaad", "sarapuupähkel", "karamell"],
+    "hind": 12.00,
+    "kaal": "250 g",
+    "kirjeldus": "Meie igapäevane lemmik. Tasakaalukas, magus ja ümar — sobib nii espressoks kui filtriks. Šokolaadi ja sarapuupähkli põhi, pehme karamellijärelmaitse.",
+    "pilt": "coffee-medium.webp"
+  },
+  {
+    "id": 3,
+    "nimi": "Öine Valss",
+    "paritolu": "Sumatra, Mandheling",
+    "rostitase": "Tume",
+    "maitseprofiil": ["tumešokolaad", "tubakas", "vürtsid"],
+    "hind": 13.00,
+    "kaal": "250 g",
+    "kirjeldus": "Täidlane ja tugev Sumatra. Madal hapsus, sügav keha. Tumeda šokolaadi ja vürtside noodid, mis sobivad õhtusse tassi.",
+    "pilt": "coffee-dark.webp"
+  },
+  {
+    "id": 4,
+    "nimi": "Lavendli Tilk",
+    "paritolu": "Guatemala, Huehuetenango",
+    "rostitase": "Keskmine-hele",
+    "maitseprofiil": ["õie noodid", "mandel", "pruun suhkur"],
+    "hind": 14.50,
+    "kaal": "250 g",
+    "kirjeldus": "Meie allkirjaröst. Õrnad õienoodid ja mandlimagusus, kerge ja puhas. Nimi austab meie brändivärvi.",
+    "pilt": "coffee-light.webp"
+  },
+  {
+    "id": 5,
+    "nimi": "Päikeseloojang",
+    "paritolu": "Keenia, Nyeri (AA)",
+    "rostitase": "Keskmine",
+    "maitseprofiil": ["mustsõstar", "tomat", "sidrunhape"],
+    "hind": 15.00,
+    "kaal": "250 g",
+    "kirjeldus": "Keenia AA elavus: ergas mustsõstar ja mahlakas hapsus. Särav ja keeruline, sõpradele, kes armastavad julget tassi.",
+    "pilt": "coffee-medium.webp"
+  },
+  {
+    "id": 6,
+    "nimi": "Vaikne Tund",
+    "paritolu": "Peruu, Cajamarca (mahe)",
+    "rostitase": "Hele",
+    "maitseprofiil": ["õun", "pruun suhkur", "pähkel"],
+    "hind": 13.50,
+    "kaal": "250 g",
+    "kirjeldus": "Mahe Peruu kõrgmäestiku oad. Pehme, magus ja kerge — õuna ja pähkli noodid. Hommikune lemmik ilma teravuseta.",
+    "pilt": "coffee-light.webp"
+  },
+  {
+    "id": 7,
+    "nimi": "Sügav Uni",
+    "paritolu": "India, Monsooned Malabar",
+    "rostitase": "Tume",
+    "maitseprofiil": ["maamuld", "kakao", "madal hapsus"],
+    "hind": 12.50,
+    "kaal": "250 g",
+    "kirjeldus": "Monsooned Malabar, küps ja maine. Peaaegu hapsuseta, kakao ja maamulla sügavus. Ideaalne piimakohviks.",
+    "pilt": "coffee-dark.webp"
+  },
+  {
+    "id": 8,
+    "nimi": "Esimene Vihm",
+    "paritolu": "Costa Rica, Tarrazú",
+    "rostitase": "Keskmine",
+    "maitseprofiil": ["apelsin", "kakao", "karamell"],
+    "hind": 14.00,
+    "kaal": "250 g",
+    "kirjeldus": "Costa Rica Tarrazú elegants: apelsini särtsakus ja karamelli magusus tasakaalus. Puhas ja klassikaline.",
+    "pilt": "coffee-medium.webp"
+  }
+]
