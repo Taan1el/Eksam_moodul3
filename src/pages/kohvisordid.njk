@@ -1,0 +1,13 @@
+{% extends "layouts/base.njk" %}
+{% set title = "Kohvisordid" %}
+{% block content %}
+{# KOHVISORTIDE LEHT — grid + filters (päritolu, röstitase, hind). #}
+<section class="catalog">
+  <aside class="filters">
+    <!-- Filters: origin / roast / price -->
+  </aside>
+  <div class="coffee-grid">
+    <!-- Coffee cards rendered from coffees.json -->
+  </div>
+</section>
+{% endblock %}
