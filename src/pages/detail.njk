@@ -1,13 +1,50 @@
 {% extends "layouts/base.njk" %}
 {% set title = "Detailleht" %}
+{% set description = "Slow Pour kohvisordi detailvaade — päritolu, röstitase, maitseprofiil ja kaal." %}
 {% block content %}
-{# DETAILLEHT — carousel + coffee fields. #}
-<section class="coffee-detail">
-  <div class="detail-carousel">
-    <!-- Image carousel -->
+
+{# DETAILLEHT — populated from coffees.json by main.js, coffee chosen via ?id= #}
+<section class="section">
+  <div class="wrap detail" id="detail" hidden>
+    <div class="detail__media">
+      <div class="carousel">
+        <div class="carousel__stage">
+          <button type="button" class="carousel__arrow carousel__arrow--prev" data-carousel-prev aria-label="Eelmine pilt">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <img id="carousel-main" class="carousel__img" alt="" width="600" height="600" />
+          <button type="button" class="carousel__arrow carousel__arrow--next" data-carousel-next aria-label="Järgmine pilt">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+        </div>
+        <div class="carousel__thumbs" id="carousel-thumbs"></div>
+      </div>
+    </div>
+
+    <div class="detail__info">
+      <div class="detail__tags" id="detail-tags"></div>
+      <h1 class="detail__name" id="detail-name"></h1>
+      <p class="detail__price num" id="detail-price"></p>
+      <p class="detail__desc" id="detail-desc"></p>
+      <dl class="specs" id="detail-specs"></dl>
+      <a class="btn btn--primary detail__cta" id="detail-cta" href="tellimus.html">Lisa tellimusse</a>
+    </div>
   </div>
-  <div class="detail-info">
-    <!-- nimi, kirjeldus, hind, päritolu, röstitase, maitseprofiil, kaal + "lisa tellimusse" CTA -->
+
+  <div class="wrap">
+    <p class="data-note" id="detail-missing" hidden>Sorti ei leitud.</p>
   </div>
 </section>
+
+{# RELATED #}
+<section class="section section--surface">
+  <div class="wrap">
+    <div class="section-head section-head--stack">
+      <span class="eyebrow">Sarnased sordid</span>
+      <h2>Sulle võiks veel maitseda</h2>
+    </div>
+    <div class="card-grid" id="related-grid"></div>
+  </div>
+</section>
+
 {% endblock %}

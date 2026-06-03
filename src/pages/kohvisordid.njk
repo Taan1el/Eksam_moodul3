@@ -1,13 +1,54 @@
 {% extends "layouts/base.njk" %}
 {% set title = "Kohvisordid" %}
+{% set description = "Slow Pour kohvisortide valik — käsitsi röstitud väikepartiid. Filtreeri päritolu, röstitaseme ja hinna järgi." %}
 {% block content %}
-{# KOHVISORTIDE LEHT — grid + filters (päritolu, röstitase, hind). #}
-<section class="catalog">
-  <aside class="filters">
-    <!-- Filters: origin / roast / price -->
-  </aside>
-  <div class="coffee-grid">
-    <!-- Coffee cards rendered from coffees.json -->
+
+{# Page header on deep-plum surface #}
+<section class="page-head">
+  <div class="wrap">
+    <span class="eyebrow eyebrow--on-dark">Meie sortiment</span>
+    <h1 class="page-head__title">Kohvisordid</h1>
+    <p class="page-head__sub">
+      Käsitsi röstitud väikepartiid. Leia oma lemmik päritolu, röstitaseme ja hinna järgi.
+    </p>
   </div>
 </section>
+
+{# Catalog: filter bar + grid (cards injected from coffees.json by main.js) #}
+<section class="section">
+  <div class="wrap">
+    <div class="filter-bar" id="filter-bar">
+      <div class="filter-bar__controls">
+        <label class="field-inline">
+          <span>Päritolu</span>
+          <select data-filter="paritolu">
+            <option value="">Kõik</option>
+          </select>
+        </label>
+        <label class="field-inline">
+          <span>Röstitase</span>
+          <select data-filter="rostitase">
+            <option value="">Kõik</option>
+          </select>
+        </label>
+        <label class="field-inline">
+          <span>Hind</span>
+          <select data-sort="hind">
+            <option value="">Soovituslik</option>
+            <option value="asc">Odavaim enne</option>
+            <option value="desc">Kalleim enne</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn--outline btn--sm" data-filter-reset>Lähtesta</button>
+      </div>
+      <span class="filter-bar__count num" id="result-count">8 toodet</span>
+    </div>
+
+    <div class="card-grid" id="coffee-grid" aria-live="polite">
+      <p class="data-note">Laen kohvisid…</p>
+    </div>
+    <p class="data-note" id="empty-note" hidden>Valitud filtritele ei vastanud ükski sort.</p>
+  </div>
+</section>
+
 {% endblock %}
