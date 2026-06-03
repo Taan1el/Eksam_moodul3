@@ -1,0 +1,195 @@
+/* ============================================================================
+   SLOW POUR — Design Tokens
+   Small-batch artisan coffee roastery · Tallinn, Estonia
+   Lavender-led palette · Fraunces / DM Sans / Space Mono
+   Source of truth: "Modern Coffee Roastery Website" codebase (theme.css + App.tsx)
+   ============================================================================ */
+
+/* ---- Fonts (vendored locally — variable TTFs, no CDN) ---------------------
+   url()s resolve relative to THIS file (project root), so any consumer at any
+   depth gets the right path. Fraunces & DM Sans are variable (full weight
+   range + optical sizing); Space Mono ships static R/B + italic. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/Fraunces-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/Fraunces-Italic-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('fonts/DMSans-Variable.ttf') format('truetype-variations');
+  font-weight: 100 1000; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('fonts/DMSans-Italic-Variable.ttf') format('truetype-variations');
+  font-weight: 100 1000; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('fonts/SpaceMono-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('fonts/SpaceMono-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('fonts/SpaceMono-Italic.ttf') format('truetype');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+
+/* Fraunces reads best with optical sizing on; apply where it's used. */
+:where(h1, h2, h3, .sp-display) { font-optical-sizing: auto; }
+
+:root {
+  /* ====== BRAND COLOR TOKENS (raw) ====================================== */
+  --sp-primary:        #7C6BB0; /* Lavender    — brand, buttons, links        */
+  --sp-primary-dark:   #3B3257; /* Deep Plum   — headings, nav, footer        */
+  --sp-primary-light:  #D9D2EC; /* Lilac Mist  — hover, soft fills, tags      */
+  --sp-accent:         #5A3E2B; /* Espresso    — coffee cues, secondary btn   */
+  --sp-accent-warm:    #C08A5B; /* Caramel     — prices, badges, roast level  */
+  --sp-bg:             #F6F2EA; /* Oat Cream   — light page background        */
+  --sp-surface:        #FCFAF6; /* Warm White  — cards                        */
+  --sp-ink:            #1E1A24; /* Bean Black  — body text                    */
+  --sp-muted:          #8A8398; /* Stone       — secondary text, captions     */
+  --sp-bg-dark:        #211C2E; /* Night Plum  — dark-mode background         */
+  --sp-success:        #6FA98C; /* Sage        — in stock, form success       */
+  --sp-warning:        #D99A4E; /* Amber       — low stock                    */
+  --sp-danger:         #C2614F; /* Clay        — errors                       */
+
+  /* Dark-mode tints (used on #211C2E surfaces) */
+  --sp-primary-bright: #9E8FCC; /* lifted lavender for dark backgrounds       */
+  --sp-surface-dark:   #2D2640; /* card surface in dark mode                  */
+  --sp-footer-dark:    #1A1528; /* deepest plum, footer in dark mode          */
+
+  /* ====== SEMANTIC FOREGROUND / SURFACE ================================= */
+  --fg-1: var(--sp-ink);          /* primary text                            */
+  --fg-2: var(--sp-muted);        /* secondary text, captions                */
+  --fg-on-primary: #FFFFFF;       /* text on lavender                        */
+  --fg-on-dark: #F6F2EA;          /* text on plum / night                    */
+
+  --bg-page:    var(--sp-bg);     /* page canvas                             */
+  --bg-surface: var(--sp-surface);/* cards, raised panels                    */
+  --bg-sunken:  #EDE8DC;          /* inputs, sunken wells (muted oat)        */
+
+  /* ====== BORDERS ======================================================= */
+  --border-hairline: rgba(124, 107, 176, 0.12); /* card & divider hairline   */
+  --border-soft:     rgba(124, 107, 176, 0.20); /* input borders             */
+  --border-strong:   rgba(124, 107, 176, 0.30); /* outline buttons           */
+  --border-dark:     rgba(157, 143, 204, 0.18); /* on dark surfaces          */
+
+  /* ====== RADII ========================================================= */
+  --radius-xs:  6px;    /* social pills, small chips backgrounds             */
+  --radius-sm:  8px;    /* grind buttons, thumbnails                         */
+  --radius-md:  10px;   /* buttons                                           */
+  --radius-base:12px;   /* base token (0.75rem) — event rows, spec cards     */
+  --radius-lg:  16px;   /* coffee cards, panels                              */
+  --radius-xl:  20px;   /* hero image, large media, full pills               */
+  --radius-pill:9999px; /* tags, badges, filter chips                        */
+
+  /* ====== SHADOWS / ELEVATION =========================================== */
+  --shadow-card:       0 2px 12px rgba(59, 50, 87, 0.08);  /* resting card    */
+  --shadow-card-hover: 0 8px 24px rgba(59, 50, 87, 0.14);  /* lifted card     */
+  --shadow-float:      0 8px 32px rgba(0, 0, 0, 0.30);     /* floating nav    */
+
+  /* ====== SPACING SCALE (4px base) ====================================== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;   /* standard horizontal page padding (desktop)          */
+  --space-16: 64px;   /* CTA band vertical padding                           */
+  --space-20: 80px;   /* section vertical rhythm (desktop)                   */
+  --page-max: 1440px; /* content max-width                                   */
+
+  /* ====== TYPE FAMILIES ================================================= */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Space Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* ====== TYPE SCALE (semantic) ========================================= */
+  /* Display headings — Fraunces, tight tracking, near-1 line-height        */
+  --h-hero:    80px;  /* hero H1 (desktop)                                   */
+  --h-display: 56px;  /* page H1                                             */
+  --h1:        48px;  /* section opener                                      */
+  --h2:        40px;  /* section heading                                     */
+  --h3:        24px;  /* card / block heading                                */
+  --h4:        20px;  /* coffee name on card                                 */
+
+  --body-lg:   20px;  /* hero subhead / lede                                 */
+  --body:      16px;  /* default paragraph                                   */
+  --body-sm:   15px;  /* dense paragraph, nav links                          */
+  --caption:   13px;  /* meta, helper text                                   */
+  --overline:  12px;  /* eyebrow labels (uppercase, tracked)                 */
+  --micro:     11px;  /* chip / badge text                                   */
+
+  --tracking-tight:    -0.03em; /* hero / display headings                   */
+  --tracking-heading:  -0.02em; /* section headings                          */
+  --tracking-overline:  0.18em; /* eyebrow uppercase labels                  */
+  --tracking-badge:     0.05em; /* badges, social pills                      */
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.0;   /* hero / large display                           */
+  --leading-snug:  1.1;   /* headings                                        */
+  --leading-body:  1.6;   /* body copy                                       */
+  --leading-loose: 1.75;  /* long-form mission / detail copy                 */
+}
+
+/* ============================================================================
+   SEMANTIC ELEMENT DEFAULTS
+   Apply these to get on-brand defaults for raw HTML elements.
+   ============================================================================ */
+.sp-root {
+  background: var(--bg-page);
+  color: var(--fg-1);
+  font-family: var(--font-body);
+  font-size: var(--body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sp-root h1, .sp-root h2, .sp-root h3 {
+  font-family: var(--font-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+.sp-root h1 { font-size: var(--h-display); font-weight: var(--weight-bold);     line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); }
+.sp-root h2 { font-size: var(--h2);        font-weight: var(--weight-semibold); line-height: var(--leading-snug);  letter-spacing: var(--tracking-heading); }
+.sp-root h3 { font-size: var(--h3);        font-weight: var(--weight-semibold); line-height: var(--leading-snug); }
+
+.sp-root p { margin: 0; color: var(--fg-1); }
+.sp-root .muted { color: var(--fg-2); }
+
+/* Eyebrow / overline label — appears above most section headings */
+.sp-overline {
+  font-family: var(--font-body);
+  font-size: var(--overline);
+  font-weight: var(--weight-semibold);
+  color: var(--sp-primary);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+
+/* Numeric values (prices, weights, dates) — ALWAYS Space Mono */
+.sp-num {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+a, .sp-link { color: var(--sp-primary); text-decoration: none; }
