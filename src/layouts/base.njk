@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} — Slow Pour</title>
+    <meta
+      name="description"
+      content="{{ description or 'Slow Pour — väikepartii kohviröstikoda Tallinnas. Käsitsi röstitud kohv, aeglaselt ja hoolega.' }}"
+    />
+    {# Fonts are vendored locally in tokens.css (@font-face) — no CDN. #}
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    {% include "components/nav.njk" %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% include "components/footer.njk" %}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>

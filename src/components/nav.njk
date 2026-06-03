@@ -1,0 +1,26 @@
+{# Top navigation — links to all 5 pages. Relative hrefs so they work at any base path. #}
+<header class="site-nav">
+  <div class="site-nav__inner wrap">
+    <a href="index.html" class="brand" aria-label="Slow Pour avaleht">
+      {# LOGO placeholder — hand-made Slow Pour badge gets swapped in here later #}
+      <span class="brand__mark" aria-hidden="true">SP</span>
+      <span class="brand__name">Slow Pour</span>
+    </a>
+
+    <nav class="nav-menu" aria-label="Peamenüü">
+      <ul>
+        <li><a href="index.html">Avaleht</a></li>
+        <li><a href="kohvisordid.html">Kohvisordid</a></li>
+        <li><a href="detail.html">Detailleht</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+        <li><a href="tellimus.html">Telli</a></li>
+      </ul>
+    </nav>
+
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Vaheta tume ja hele teema">
+      <svg class="theme-toggle__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+      </svg>
+    </button>
+  </div>
+</header>
