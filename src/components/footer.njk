@@ -1,30 +1,52 @@
-{# Footer — brand, menu, contact info. Relative hrefs so they work at any base path. #}
+{# Footer — brand, link columns, social, bottom bar. Relative hrefs so they work at any base path. #}
 <footer class="site-footer">
   <div class="site-footer__inner wrap">
-    <div class="footer-col footer-brand">
-      <span class="brand__mark brand__mark--light" aria-hidden="true">SP</span>
-      <span class="footer-brand__name">Slow Pour</span>
-      <p class="footer-brand__tag">Väike käsitööröstikoda. Aeglaselt, hoolega.</p>
+    <div class="footer-brand">
+      {# LOGO placeholder — hand-made Slow Pour badge gets swapped in here later #}
+      <span class="footer-wordmark">Slow Pour</span>
+      <span class="footer-wordmark__sub">Coffee Roasters</span>
+      <p class="footer-brand__tag">
+        Väikepartiiga eriroasti röster Tallinnas. Igal tassil on aega ja tähelepanu.
+      </p>
+      <div class="footer-social">
+        <a class="footer-social__btn" href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+        <a class="footer-social__btn" href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
+        <a class="footer-social__btn" href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a>
+      </div>
     </div>
 
-    <nav class="footer-col footer-links" aria-label="Jaluse menüü">
-      <h2 class="footer-col__title">Menüü</h2>
-      <a href="index.html">Avaleht</a>
-      <a href="kohvisordid.html">Kohvisordid</a>
-      <a href="kontakt.html">Kontakt</a>
-      <a href="tellimus.html">Telli</a>
+    <nav class="footer-col" aria-label="Kohvid">
+      <h2 class="footer-col__title">Kohvid</h2>
+      <a href="kohvisordid.html">Kõik sordid</a>
+      <a href="kohvisordid.html?roast=Hele">Hele röst</a>
+      <a href="kohvisordid.html?roast=Keskmine">Keskmine röst</a>
+      <a href="kohvisordid.html?roast=Tume">Tume röst</a>
+      <a href="tellimus.html">Tellimused</a>
     </nav>
 
-    <div class="footer-col footer-contact">
-      <h2 class="footer-col__title">Kontakt</h2>
-      <p>Roostiku 12, Tallinn</p>
-      <p><a href="mailto:tere@slowpour.ee">tere@slowpour.ee</a></p>
-      <p class="num">+372 5xx xxxx</p>
-      <p>E–R 8–18 · L 9–16 · P suletud</p>
-    </div>
+    <nav class="footer-col" aria-label="Ettevõte">
+      <h2 class="footer-col__title">Ettevõte</h2>
+      <a href="index.html#missioon">Meie lugu</a>
+      <a href="index.html#missioon">Röstimisprotsess</a>
+      <a href="kohvisordid.html">Päritolu</a>
+      <a href="index.html#sundmused">Sündmused</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+
+    <nav class="footer-col" aria-label="Klienditeenindus">
+      <h2 class="footer-col__title">Klienditeenindus</h2>
+      <a href="kontakt.html">Kontakt</a>
+      <a href="kontakt.html">KKK</a>
+      <a href="kontakt.html">Tarne</a>
+      <a href="kontakt.html">Tagastused</a>
+      <a href="index.html">Kohvik</a>
+    </nav>
   </div>
 
   <div class="site-footer__bar">
-    <p class="num">© 2026 Slow Pour</p>
+    <div class="wrap site-footer__bar-inner">
+      <span>© 2026 Slow Pour OÜ. Kõik õigused kaitstud.</span>
+      <span class="num">Tallinn, Estonia · <a href="mailto:tere@slowpour.ee">slow-pour.ee</a></span>
+    </div>
   </div>
 </footer>
