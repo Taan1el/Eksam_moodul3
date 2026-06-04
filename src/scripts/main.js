@@ -31,6 +31,38 @@ function revealCards(container) {
   ScrollTrigger.refresh();
 }
 
+function initHeroVideoScroll() {
+  const hero = document.querySelector(".hero");
+  const heroVideo = document.querySelector(".hero__video");
+  if (!hero || !heroVideo || !ALLOW_MOTION) return;
+
+  heroVideo.muted = true;
+  heroVideo.pause();
+
+  function bindScrollPlayback() {
+    if (!Number.isFinite(heroVideo.duration) || heroVideo.duration <= 0) return;
+
+    heroVideo.currentTime = 0;
+    gsap.to(heroVideo, {
+      currentTime: Math.max(heroVideo.duration - 0.05, 0),
+      ease: "none",
+      scrollTrigger: {
+        trigger: hero,
+        start: "top top",
+        end: "bottom+=35% top",
+        scrub: true,
+      },
+    });
+  }
+
+  if (heroVideo.readyState >= 1) {
+    bindScrollPlayback();
+    return;
+  }
+
+  heroVideo.addEventListener("loadedmetadata", bindScrollPlayback, { once: true });
+}
+
 /* ---- Dark-mode toggle (persists choice; defaults to OS preference) -------- */
 const toggle = document.getElementById("theme-toggle");
 const saved = localStorage.getItem("theme");
@@ -351,6 +383,7 @@ initOrder();
 /* ---- Page-load + scroll animations (GSAP + ScrollTrigger) ---------------- */
 function initAnimations() {
   if (!ALLOW_MOTION) return;
+  initHeroVideoScroll();
   const heroBits = document.querySelectorAll(".hero__content > *");
   if (heroBits.length) {
     gsap.from(heroBits, { opacity: 0, y: 24, duration: 0.7, ease: "power2.out", stagger: 0.1 });
