@@ -41,6 +41,13 @@ h2 {
 p { margin: 0; }
 img { display: block; max-width: 100%; }
 
+/* Visible keyboard focus for links, buttons and other interactive controls (a11y) */
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--sp-primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
 .num, .price {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -290,7 +297,8 @@ img { display: block; max-width: 100%; }
 .event__title { font-weight: var(--weight-semibold); color: var(--fg-1); }
 .event__loc { font-size: var(--caption); color: var(--fg-2); }
 .event__spots { font-size: var(--overline); color: var(--sp-success); background: color-mix(in srgb, var(--sp-success) 15%, transparent); padding: 4px 10px; border-radius: var(--radius-pill); }
-.event__cta { font-size: var(--caption); color: var(--sp-primary); font-weight: var(--weight-medium); }
+.event__cta { font-size: var(--caption); color: var(--sp-primary); font-weight: var(--weight-medium); text-decoration: none; white-space: nowrap; }
+.event__cta:hover { text-decoration: underline; }
 
 /* ---- Popular slider ------------------------------------------------------- */
 .popular__head { margin-bottom: var(--space-8); }
