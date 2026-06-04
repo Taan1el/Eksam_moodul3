@@ -1,5 +1,9 @@
 // Slow Pour — frontend interactions.
 
+// Base path (./ in dev, /Multimeedia_eksam/ in the production build) so asset
+// URLs built in JS resolve correctly whether hosted at root or a subpath.
+const BASE = import.meta.env.BASE_URL;
+
 /* ---- Dark-mode toggle (persists choice) ---------------------------------- */
 const toggle = document.getElementById("theme-toggle");
 const saved = localStorage.getItem("theme");
