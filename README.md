@@ -3,7 +3,7 @@
 Taaniel Vananurm MM-23
 
 Moodul 3 front-end Slow Pour kohviröstikoja eksamiprojekti jaoks. Staatiline,
-responsiivne mitmeleheline veebileht, mis järgib Moodul 1 disaini.
+responsiivne mitmeleheline veebileht.
 
 ## Tehnoloogia
 
@@ -41,7 +41,7 @@ npm run preview   # toodanguversiooni eelvaade
 ```
 
 Märkus: toodangu-build kasutab base-teed `/Multimeedia_eksam/` GitHub Pages jaoks.
-Arenduses (`npm run dev`) töötab leht juurkataloogis `/`.
+
 
 ## Kausta struktuur
 
@@ -66,10 +66,7 @@ toidab ka Moodul 4 andmebaasi).
 Toodangu-build on avaldatud GitHub Pages kaudu lõpurepos:
 https://taan1el.github.io/Multimeedia_eksam/
 
-## Märkused
+## Märkus
 
 - Vormide reaalne saatmine (kontakti e-kiri, tellimuste salvestamine) toimub
-  **Moodul 4** back-endis. Siin moodulis on vormidel front-end valideerimine ja
-  õnnestumisteated.
-- Pildid on loodud Moodul 2-s; fondid on avatud lähtekoodiga (OFL litsents,
-  `src/styles/fonts/`).
+  **Moodul 4** back-endis.
