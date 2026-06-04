@@ -8,15 +8,30 @@ gsap.registerPlugin(ScrollTrigger);
 // URLs built in JS resolve correctly whether hosted at root or a subpath.
 const BASE = import.meta.env.BASE_URL;
 const asset = (path) => `${BASE}${path.replace(/^\/+/, "")}`;
+const params = new URLSearchParams(window.location.search);
+const FORCE_MOTION = params.get("motion") === "on";
+const DISABLE_MOTION = params.get("motion") === "off";
+const PROD = import.meta.env.PROD;
+
+function pageUrl(page, query = "") {
+  const cleanPage = page.replace(/^\/*/, "").replace(/\.html$/, "");
+  const suffix = PROD ? (cleanPage === "index" ? "" : `${cleanPage}/`) : `${cleanPage === "index" ? "index" : cleanPage}.html`;
+  const search = query ? `?${new URLSearchParams(query).toString()}` : "";
+  return `${BASE}${suffix}${search}`;
+}
 
 // Animations run only when the user hasn't requested reduced motion.
-const ALLOW_MOTION = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+const ALLOW_MOTION =
+  !DISABLE_MOTION &&
+  (FORCE_MOTION || PROD || !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+console.log(`[motion] allow=${ALLOW_MOTION} force=${FORCE_MOTION} reduce=${window.matchMedia("(prefers-reduced-motion: reduce)").matches}`);
 
 function revealOnScroll(target, vars = {}) {
   if (!ALLOW_MOTION || !target) return;
   gsap.from(target, {
-    opacity: 0, y: 28, duration: 0.6, ease: "power2.out",
-    scrollTrigger: { trigger: target, start: "top 85%" },
+    opacity: 0, y: 56, scale: 0.96, duration: 0.85, ease: "power3.out",
+    scrollTrigger: { trigger: target, start: "top 88%" },
     ...vars,
   });
 }
@@ -25,7 +40,7 @@ function revealCards(container) {
   const cards = container.querySelectorAll(".coffee-card");
   if (!cards.length) return;
   gsap.from(cards, {
-    opacity: 0, y: 24, duration: 0.5, ease: "power2.out", stagger: 0.08,
+    opacity: 0, y: 48, scale: 0.94, duration: 0.7, ease: "power3.out", stagger: 0.1,
     scrollTrigger: { trigger: container, start: "top 88%" },
   });
   ScrollTrigger.refresh();
@@ -86,9 +101,11 @@ navToggle?.addEventListener("click", () => {
 
 /* ---- Mark the current page in the nav ------------------------------------ */
 (() => {
-  const here = location.pathname.split("/").pop() || "index.html";
+  const here = location.pathname.replace(/\/+$/, "").split("/").pop() || "index";
+  const currentPage = here.replace(/\.html$/, "") || "index";
   document.querySelectorAll(".nav-menu a").forEach((a) => {
-    if (a.getAttribute("href") === here) a.setAttribute("aria-current", "page");
+    const linkPage = (a.getAttribute("href") || "").split("?")[0].replace(/\/+$/, "").split("/").pop().replace(/\.html$/, "") || "index";
+    if (linkPage === currentPage) a.setAttribute("aria-current", "page");
   });
 })();
 
@@ -123,7 +140,7 @@ export function coffeeCard(c) {
   const price = Number(c.hind).toFixed(2);
   return `
     <article class="coffee-card">
-      <a class="coffee-card__media" href="detail.html?id=${c.id}" aria-label="Vaata: ${c.nimi}">
+      <a class="coffee-card__media" href="${pageUrl("detail", { id: c.id })}" aria-label="Vaata: ${c.nimi}">
         <picture>
           <source srcset="${asset(`assets/img/${img}.avif`)}" type="image/avif" />
           <img src="${asset(`assets/img/${img}.webp`)}" alt="${c.nimi} — kohvipakk" loading="lazy" width="400" height="400" />
@@ -138,7 +155,7 @@ export function coffeeCard(c) {
         <p class="coffee-card__origin">${c.paritolu}</p>
         <div class="coffee-card__foot">
           <span class="coffee-card__price num">€${price}</span>
-          <a class="btn btn--outline btn--sm" href="detail.html?id=${c.id}">Vaata →</a>
+          <a class="btn btn--outline btn--sm" href="${pageUrl("detail", { id: c.id })}">Vaata →</a>
         </div>
       </div>
     </article>`;
@@ -272,7 +289,7 @@ async function initDetail() {
   document.getElementById("detail-specs").innerHTML = specs
     .map(([k, v]) => `<div class="specs__row"><dt>${k}</dt><dd>${v}</dd></div>`)
     .join("");
-  document.getElementById("detail-cta").href = `tellimus.html?id=${c.id}`;
+  document.getElementById("detail-cta").href = pageUrl("tellimus", { id: c.id });
 
   initCarousel(c.nimi, [roastImage(c.rostitase), "hero", "pattern"]);
 
@@ -384,15 +401,34 @@ initOrder();
 function initAnimations() {
   if (!ALLOW_MOTION) return;
   initHeroVideoScroll();
+  const hero = document.querySelector(".hero");
+  const heroContent = document.querySelector(".hero__content");
+  const heroScrim = document.querySelector(".hero__scrim");
   const heroBits = document.querySelectorAll(".hero__content > *");
   if (heroBits.length) {
     gsap.from(heroBits, { opacity: 0, y: 24, duration: 0.7, ease: "power2.out", stagger: 0.1 });
   }
   if (document.querySelector(".hero__media")) {
     gsap.to(".hero__media", {
-      yPercent: 15,
+      yPercent: 18,
+      scale: 1.08,
       ease: "none",
       scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+    });
+  }
+  if (heroContent && hero) {
+    gsap.to(heroContent, {
+      yPercent: -18,
+      opacity: 0.38,
+      ease: "none",
+      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
+    });
+  }
+  if (heroScrim && hero) {
+    gsap.to(heroScrim, {
+      opacity: 0.72,
+      ease: "none",
+      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
     });
   }
   document
