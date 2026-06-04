@@ -3,6 +3,7 @@
 // Base path (./ in dev, /Multimeedia_eksam/ in the production build) so asset
 // URLs built in JS resolve correctly whether hosted at root or a subpath.
 const BASE = import.meta.env.BASE_URL;
+const asset = (path) => `${BASE}${path.replace(/^\/+/, "")}`;
 
 /* ---- Dark-mode toggle (persists choice) ---------------------------------- */
 const toggle = document.getElementById("theme-toggle");
@@ -35,7 +36,7 @@ navToggle?.addEventListener("click", () => {
 /* ---- Coffee data loader -------------------------------------------------- */
 export async function loadCoffees() {
   try {
-    const res = await fetch("/assets/coffees.json");
+    const res = await fetch(asset("assets/coffees.json"));
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     console.log(`[data] loaded ${data.length} coffees`);
@@ -65,8 +66,8 @@ export function coffeeCard(c) {
     <article class="coffee-card">
       <a class="coffee-card__media" href="detail.html?id=${c.id}" aria-label="Vaata: ${c.nimi}">
         <picture>
-          <source srcset="/assets/img/${img}.avif" type="image/avif" />
-          <img src="/assets/img/${img}.webp" alt="${c.nimi} — kohvipakk" loading="lazy" width="400" height="400" />
+          <source srcset="${asset(`assets/img/${img}.avif`)}" type="image/avif" />
+          <img src="${asset(`assets/img/${img}.webp`)}" alt="${c.nimi} — kohvipakk" loading="lazy" width="400" height="400" />
         </picture>
       </a>
       <div class="coffee-card__body">
@@ -163,13 +164,13 @@ function initCarousel(nimi, slides) {
   let i = 0;
   function show(idx) {
     i = (idx + slides.length) % slides.length;
-    mainImg.src = `/assets/img/${slides[i]}.webp`;
+    mainImg.src = asset(`assets/img/${slides[i]}.webp`);
     mainImg.alt = `${nimi} — pilt ${i + 1}`;
     [...thumbs.children].forEach((t, n) => t.setAttribute("aria-current", n === i ? "true" : "false"));
     console.log(`[carousel] slide ${i + 1}/${slides.length}`);
   }
   thumbs.innerHTML = slides
-    .map((s, n) => `<button type="button" class="carousel__thumb" data-i="${n}" aria-label="Pilt ${n + 1}"><img src="/assets/img/${s}.webp" alt="" /></button>`)
+    .map((s, n) => `<button type="button" class="carousel__thumb" data-i="${n}" aria-label="Pilt ${n + 1}"><img src="${asset(`assets/img/${s}.webp`)}" alt="" /></button>`)
     .join("");
   thumbs.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => show(Number(b.dataset.i))));
   document.querySelector("[data-carousel-prev]").addEventListener("click", () => show(i - 1));
