@@ -161,6 +161,12 @@ async function initCatalog() {
   fillSelect(selPar, unique(all.map((c) => c.paritolu)));
   fillSelect(selRoast, unique(all.map((c) => c.rostitase)));
 
+  // Pre-select a roast level when the URL asks for it (e.g. footer "Hele röst" link).
+  const roastParam = getParam("roast");
+  if (roastParam && [...selRoast.options].some((o) => o.value === roastParam)) {
+    selRoast.value = roastParam;
+  }
+
   function apply() {
     const par = selPar.value;
     const roast = selRoast.value;
