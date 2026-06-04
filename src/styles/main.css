@@ -203,9 +203,16 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 }
 .hero__media { position: absolute; inset: 0; }
 .hero__media img, .hero__video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: right center; }
+.hero__dark-image { display: none; width: 100%; height: 100%; }
 .hero__scrim {
   position: absolute; inset: 0;
   background: linear-gradient(90deg, rgba(243,238,226,0.97) 0%, rgba(243,238,226,0.82) 32%, rgba(243,238,226,0.15) 58%, rgba(243,238,226,0) 72%);
+}
+.dark .hero { background: var(--sp-bg-dark); }
+.dark .hero__video { display: none; }
+.dark .hero__dark-image { display: block; }
+.dark .hero__scrim {
+  background: linear-gradient(90deg, rgba(33,28,46,0.98) 0%, rgba(33,28,46,0.82) 34%, rgba(33,28,46,0.22) 58%, rgba(33,28,46,0) 74%);
 }
 .hero__inner { position: relative; max-width: var(--page-max); margin: 0 auto; padding: var(--space-20) var(--space-12); width: 100%; }
 .hero__content { max-width: 560px; }
@@ -221,6 +228,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 .hero__title em { color: var(--sp-primary); font-style: italic; }
 .hero__lede { font-size: var(--body-lg); color: var(--sp-muted); line-height: var(--leading-body); max-width: 440px; margin-bottom: var(--space-8); }
 .hero__lede em { font-style: italic; color: var(--sp-primary-dark); }
+.dark .hero__title em,
+.dark .hero__lede em { color: var(--sp-primary-bright); }
+.dark .hero__lede { color: color-mix(in srgb, var(--fg-on-dark) 78%, transparent); }
 .hero__actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
 /* ---- Mission -------------------------------------------------------------- */
@@ -281,6 +291,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   border-radius: var(--radius-pill);
 }
 .tag--roast { background: color-mix(in srgb, var(--sp-accent-warm) 22%, transparent); color: var(--sp-accent); }
+.dark .tag--roast { background: color-mix(in srgb, var(--sp-accent-warm) 30%, transparent); color: #ECCBA6; }
+.dark .tag { background: color-mix(in srgb, var(--sp-primary-bright) 26%, transparent); color: var(--sp-primary-light); }
 
 /* ---- Events --------------------------------------------------------------- */
 .events { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -324,17 +336,22 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 
 /* ---- Footer --------------------------------------------------------------- */
 .site-footer { background: var(--sp-primary-dark); color: var(--fg-on-dark); }
-.site-footer__inner { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: var(--space-12); padding-top: var(--space-16); padding-bottom: var(--space-12); }
-.footer-col__title { font-family: var(--font-body); font-size: var(--overline); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--sp-primary-light); margin-bottom: var(--space-4); }
-.footer-brand { display: flex; flex-direction: column; gap: var(--space-3); }
-.footer-brand__name { font-family: var(--font-display); font-size: var(--h3); font-weight: var(--weight-semibold); }
-.footer-brand__tag { color: rgba(246,242,234,0.7); max-width: 30ch; }
-.footer-links { display: flex; flex-direction: column; gap: var(--space-2); }
-.footer-links a, .footer-contact a { color: var(--fg-on-dark); text-decoration: none; }
-.footer-links a:hover, .footer-contact a:hover { color: var(--sp-primary-light); }
-.footer-contact p { color: rgba(246,242,234,0.85); margin-bottom: var(--space-2); }
+.site-footer__inner { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: var(--space-10); padding-top: var(--space-16); padding-bottom: var(--space-12); }
+.footer-brand { display: flex; flex-direction: column; gap: var(--space-4); max-width: 34ch; }
+.footer-wordmark { font-family: var(--font-display); font-size: var(--h3); font-weight: var(--weight-bold); line-height: 1; }
+.footer-wordmark__sub { font-size: var(--overline); letter-spacing: 0.22em; text-transform: uppercase; color: var(--sp-primary-light); }
+.footer-brand__tag { color: rgba(246,242,234,0.72); line-height: var(--leading-body); }
+.footer-social { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.footer-social__btn { font-size: var(--caption); color: var(--fg-on-dark); background: rgba(246,242,234,0.08); border: 1px solid rgba(246,242,234,0.14); padding: 6px 14px; border-radius: var(--radius-pill); text-decoration: none; transition: background 0.15s ease, color 0.15s ease; }
+.footer-social__btn:hover { background: var(--sp-primary); color: #fff; }
+.footer-col { display: flex; flex-direction: column; gap: var(--space-3); }
+.footer-col__title { font-family: var(--font-body); font-size: var(--overline); font-weight: var(--weight-semibold); text-transform: uppercase; letter-spacing: var(--tracking-overline); color: var(--sp-primary-light); margin: 0 0 var(--space-2); }
+.footer-col a { color: rgba(246,242,234,0.85); text-decoration: none; transition: color 0.15s ease; }
+.footer-col a:hover { color: #fff; }
 .site-footer__bar { border-top: 1px solid rgba(246,242,234,0.12); }
-.site-footer__bar p { max-width: var(--page-max); margin: 0 auto; padding: var(--space-5) var(--space-12); color: rgba(246,242,234,0.6); font-size: var(--caption); }
+.site-footer__bar-inner { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; padding: var(--space-5) 0; color: rgba(246,242,234,0.6); font-size: var(--caption); }
+.site-footer__bar-inner a { color: inherit; }
+.site-footer__bar-inner a:hover { color: var(--sp-primary-light); }
 
 /* ---- Page header (deep plum) — used by inner pages ------------------------ */
 .page-head { background: var(--sp-primary-dark); color: var(--fg-on-dark); padding: var(--space-16) 0 var(--space-12); }
@@ -498,6 +515,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   .order-summary { position: static; }
   .cta-band__title { font-size: 32px; }
   .hero__title { font-size: 56px; }
+  .site-footer__inner { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; max-width: none; }
 }
 
 @media (max-width: 600px) {
