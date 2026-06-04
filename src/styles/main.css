@@ -249,6 +249,10 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   justify-content: center;
 }
 .mission__media img { width: 78%; max-width: 360px; filter: drop-shadow(0 8px 24px rgba(59,50,87,0.18)); }
+.mission__mascot--dark { display: none; }
+.dark .mission__media { background-color: var(--sp-surface-dark); background-image: url("/assets/img/pattern-dark.webp"); }
+.dark .mission__mascot--light { display: none; }
+.dark .mission__mascot--dark { display: block; }
 .mission__stat {
   position: absolute; bottom: 20px; left: 20px;
   background: rgba(33,28,46,0.85);
