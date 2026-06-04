@@ -1,14 +1,41 @@
 // Slow Pour — frontend interactions.
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Base path (./ in dev, /Multimeedia_eksam/ in the production build) so asset
 // URLs built in JS resolve correctly whether hosted at root or a subpath.
 const BASE = import.meta.env.BASE_URL;
 const asset = (path) => `${BASE}${path.replace(/^\/+/, "")}`;
 
-/* ---- Dark-mode toggle (persists choice) ---------------------------------- */
+// Animations run only when the user hasn't requested reduced motion.
+const ALLOW_MOTION = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+
+function revealOnScroll(target, vars = {}) {
+  if (!ALLOW_MOTION || !target) return;
+  gsap.from(target, {
+    opacity: 0, y: 28, duration: 0.6, ease: "power2.out",
+    scrollTrigger: { trigger: target, start: "top 85%" },
+    ...vars,
+  });
+}
+function revealCards(container) {
+  if (!ALLOW_MOTION || !container) return;
+  const cards = container.querySelectorAll(".coffee-card");
+  if (!cards.length) return;
+  gsap.from(cards, {
+    opacity: 0, y: 24, duration: 0.5, ease: "power2.out", stagger: 0.08,
+    scrollTrigger: { trigger: container, start: "top 88%" },
+  });
+  ScrollTrigger.refresh();
+}
+
+/* ---- Dark-mode toggle (persists choice; defaults to OS preference) -------- */
 const toggle = document.getElementById("theme-toggle");
 const saved = localStorage.getItem("theme");
-if (saved === "dark") document.documentElement.classList.add("dark");
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+if (saved === "dark" || (!saved && prefersDark)) document.documentElement.classList.add("dark");
 
 toggle?.addEventListener("click", () => {
   const isDark = document.documentElement.classList.toggle("dark");
@@ -97,10 +124,12 @@ async function initHome() {
   if (featured) {
     featured.innerHTML = coffees.slice(0, 3).map(coffeeCard).join("");
     console.log("[home] featured grid: 3 cards");
+    revealCards(featured);
   }
   if (popular) {
     popular.innerHTML = coffees.map(coffeeCard).join("");
     console.log(`[home] popular slider: ${coffees.length} cards`);
+    revealCards(popular);
   }
 }
 
@@ -152,6 +181,7 @@ async function initCatalog() {
     apply();
   });
   apply();
+  revealCards(grid);
 }
 initCatalog();
 
@@ -210,6 +240,9 @@ async function initDetail() {
 
   const related = all.filter((x) => x.id !== c.id).slice(0, 3);
   document.getElementById("related-grid").innerHTML = related.map(coffeeCard).join("");
+  revealOnScroll(root.querySelector(".detail__media"));
+  revealOnScroll(root.querySelector(".detail__info"));
+  revealCards(document.getElementById("related-grid"));
   console.log(`[detail] id=${id} -> ${c.nimi}; related ${related.length}`);
 }
 initDetail();
@@ -309,26 +342,22 @@ async function initOrder() {
 }
 initOrder();
 
-/* ---- Scroll reveals (IntersectionObserver, reduced-motion aware) --------- */
-function initReveals() {
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if (!("IntersectionObserver" in window)) return;
-  const sel = ".section-head, .mission__text, .mission__media, .events, .popular__head, .cta-band__inner, .contact__info, .contact__form-wrap, .order__form, .order-summary, .detail__media, .detail__info";
-  const els = document.querySelectorAll(sel);
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-visible");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-  els.forEach((el) => {
-    el.classList.add("reveal");
-    io.observe(el);
-  });
+/* ---- Page-load + scroll animations (GSAP + ScrollTrigger) ---------------- */
+function initAnimations() {
+  if (!ALLOW_MOTION) return;
+  const heroBits = document.querySelectorAll(".hero__content > *");
+  if (heroBits.length) {
+    gsap.from(heroBits, { opacity: 0, y: 24, duration: 0.7, ease: "power2.out", stagger: 0.1 });
+  }
+  if (document.querySelector(".hero__media")) {
+    gsap.to(".hero__media", {
+      yPercent: 15,
+      ease: "none",
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+    });
+  }
+  document
+    .querySelectorAll(".section-head, .mission__text, .mission__media, .events, .contact__info, .contact__form-wrap, .order__form, .order-summary")
+    .forEach((el) => revealOnScroll(el));
 }
-initReveals();
+initAnimations();
