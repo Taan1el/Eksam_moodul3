@@ -11,40 +11,29 @@
    range + optical sizing); Space Mono ships static R/B + italic. */
 @font-face {
   font-family: 'Fraunces';
-  src: url('fonts/Fraunces-Variable.ttf') format('truetype-variations');
-  font-weight: 100 900; font-style: normal; font-display: swap;
+  src: url('fonts/Fraunces-Variable.woff2') format('woff2');
+  font-weight: 100 900; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'Fraunces';
-  src: url('fonts/Fraunces-Italic-Variable.ttf') format('truetype-variations');
-  font-weight: 100 900; font-style: italic; font-display: swap;
+  src: url('fonts/Fraunces-Italic-Variable.woff2') format('woff2');
+  font-weight: 100 900; font-style: italic; font-display: optional;
 }
 @font-face {
   font-family: 'DM Sans';
-  src: url('fonts/DMSans-Variable.ttf') format('truetype-variations');
-  font-weight: 100 1000; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'DM Sans';
-  src: url('fonts/DMSans-Italic-Variable.ttf') format('truetype-variations');
-  font-weight: 100 1000; font-style: italic; font-display: swap;
+  src: url('fonts/DMSans-Variable.woff2') format('woff2');
+  font-weight: 100 1000; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'Space Mono';
-  src: url('fonts/SpaceMono-Regular.ttf') format('truetype');
-  font-weight: 400; font-style: normal; font-display: swap;
+  src: url('fonts/SpaceMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: 'Space Mono';
-  src: url('fonts/SpaceMono-Bold.ttf') format('truetype');
-  font-weight: 700; font-style: normal; font-display: swap;
+  src: url('fonts/SpaceMono-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: optional;
 }
-@font-face {
-  font-family: 'Space Mono';
-  src: url('fonts/SpaceMono-Italic.ttf') format('truetype');
-  font-weight: 400; font-style: italic; font-display: swap;
-}
-
 /* Fraunces reads best with optical sizing on; apply where it's used. */
 :where(h1, h2, h3, .sp-display) { font-optical-sizing: auto; }
 
@@ -71,6 +60,7 @@
 
   /* ====== SEMANTIC FOREGROUND / SURFACE ================================= */
   --sp-primary-text: #6B599F;
+  --sp-on-light-accent: #6B599F;
   --sp-success-text: #365F4C;
   --sp-muted: #6F687A;
   --fg-1: var(--sp-ink);          /* primary text                            */
@@ -196,3 +186,11 @@
 }
 
 a, .sp-link { color: var(--sp-primary); text-decoration: none; }
+
+@media (max-width: 600px) {
+  :root {
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
+  }
+}
