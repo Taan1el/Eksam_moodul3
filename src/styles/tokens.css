@@ -70,6 +70,9 @@
   --sp-footer-dark:    #1A1528; /* deepest plum, footer in dark mode          */
 
   /* ====== SEMANTIC FOREGROUND / SURFACE ================================= */
+  --sp-primary-text: #6B599F;
+  --sp-success-text: #365F4C;
+  --sp-muted: #6F687A;
   --fg-1: var(--sp-ink);          /* primary text                            */
   --fg-2: var(--sp-muted);        /* secondary text, captions                */
   --fg-on-primary: #FFFFFF;       /* text on lavender                        */
