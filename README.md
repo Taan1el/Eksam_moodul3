@@ -1,72 +1,89 @@
 # Slow Pour front-end
 
-Taaniel Vananurm MM-23
+Taaniel Vananurm, MM-23
 
-Moodul 3 front-end Slow Pour kohviröstikoja eksamiprojekti jaoks. Staatiline,
-responsiivne mitmeleheline veebileht.
+Moodul 3 on Slow Pour kohviröstikoja mitmeleheline front-end. Leht töötab
+eraldi Vite projektina ning selle production build avaldatakse lõpurepo kaudu
+GitHub Pagesis.
 
 ## Tehnoloogia
 
-- Vite (build ja arenduskeskkond)
-- Vituum + Nunjucks (mallid ja korduvkasutatavad komponendid)
-- Tailwind CSS (utiliidid) + oma disainitokenid (`src/styles/tokens.css`)
-- Vanilla JavaScript (ES-moodulid)
-- Kohalikud fondid: Fraunces, DM Sans, Space Mono (OFL, ei kasuta CDN-i)
+- Vite ja Vituum buildi ning arenduskeskkonna jaoks
+- Nunjucks korduvkasutatavate layout'ide ja komponentide jaoks
+- Tailwind CSS koos oma disainitokenitega
+- Vanilla JavaScript ES-moodulitena
+- GSAP ja ScrollTrigger kerimisanimatsioonide jaoks
+- kohalikud WOFF2 fondid: Fraunces, DM Sans ja Space Mono
 
 ## Lehed
 
-1. **Avaleht** (`index`) - hero (videoga), tutvustus, värsked sordid, sündmused, populaarsed, CTA
-2. **Kohvisordid** - filtrid (päritolu, röstiaste) + sortimine (hind) + tulemuste arv
-3. **Detailleht** - pildikarussell, kirjeldus, andmed (päritolu, röstiaste, maitseprofiil, kaal)
-4. **Kontakt** - kontaktivorm valideerimise ja õnnestumisteatega
-5. **Tellimus** - tellimisvorm, koguse valik, jahvatus, elav kokkuvõte (tasuta tarne 35 eurost)
+Põhilehed:
+
+1. Avaleht
+2. Kohvisordid
+3. Kohvi detailleht
+4. Kontakt
+5. Tellimus
+
+Footerist avanevad ka KKK, tarne, tagastuse ja kohviku infolehed.
 
 ## Funktsioonid
 
-- Responsiivne: 390 / 768 / 1920, mobiilis kokkupandav menüü
-- Tume/hele teema (valik salvestatakse `localStorage`-isse)
-- Töötavad filtrid, sortimine, karussell ja vormivalideerimine
-- Animatsioonid: hero-video, kerimisel ilmuvad sektsioonid (IntersectionObserver)
-- Ligipääsetavus: semantiline HTML, ARIA, "liigu sisu juurde" link, nähtav klaviatuurifookus, `aria-current`
-- `prefers-reduced-motion` toetus (animatsioonid lülituvad välja)
-- Optimeeritud pildid (WebP/AVIF, `loading="lazy"`)
+- responsiivne kujundus desktopi, tahvli ja mobiili jaoks
+- mobiilimenüü ning nähtavad klaviatuurifookused
+- hele ja tume teema, valik salvestatakse brauserisse
+- kohvisortide filtreerimine ja hinna järgi sortimine
+- pildikarussell, tellimuse kokkuvõte ja front-endi ostukorv
+- GSAP kerimisanimatsioonid ning kerimisega juhitav hero-video
+- `prefers-reduced-motion` tugi
+- WebP ja AVIF pildid, mõõtmed, lazy loading ja responsive `sizes`
+- kohalikud fondid ilma välise CDN-ita
 
-## Paigaldus ja käivitamine
+Animatsioonide kood laaditakse alles esimese kasutaja tegevuse järel. Mobiilis
+hero-videot ei laadita ning väiksel ekraanil kasutatakse süsteemifonte. See
+hoiab esialgse laadimise väiksemana.
+
+## Käivitamine
 
 ```powershell
 npm install
-npm run dev       # arendus, http://localhost:5173/
-npm run build     # toodanguversioon kausta dist/
-npm run preview   # toodanguversiooni eelvaade
+npm run dev
 ```
 
-Märkus: toodangu-build kasutab base-teed `/Multimeedia_eksam/` GitHub Pages jaoks.
+Production build:
 
+```powershell
+npm run build
+npm run preview
+```
 
-## Kausta struktuur
+Build tekib kausta `dist/`. Production base path on
+`/Multimeedia_eksam/`, sest avalik leht asub GitHub Pagesi alamteel.
+
+## Kaustad
 
 ```text
 src/
-  pages/        5 lehte (.njk)
-  layouts/      base.njk
-  components/   nav.njk, footer.njk
-  scripts/      main.js
-  styles/       tokens.css, main.css, fonts/
+  components/   nav ja footer
+  layouts/      ühine baasmall
+  pages/        lehtede Nunjucksi mallid
+  scripts/      põhiloogika ja eraldi motion-moodul
+  styles/       disainitokenid, stiilid ja fondid
 public/
-  assets/       coffees.json, img/ (pildid + hero-video)
+  assets/       kohviandmed, pildid ja hero-video
+scripts/
+  inline-css.mjs
 ```
 
-## Andmed
+`npm run build` lisab kriitilise CSS-i otse HTML-i. JavaScript ja
+animatsioonid jäävad eraldi failidesse ning laaditakse vajaduse järgi.
 
-Kohvisortide andmed on failis `public/assets/coffees.json` (sama andmestik
-toidab ka Moodul 4 andmebaasi).
+## Andmed ja backend
 
-## Hosting
+Staatilise front-endi kohviandmed on failis `public/assets/coffees.json`.
+Moodul 4 kasutab sama sisu SQLite andmebaasis ning lisab päris vormitöötluse,
+admini ja serveripoolse valideerimise.
 
-Toodangu-build on avaldatud GitHub Pages kaudu lõpurepos:
+## Avalik leht
+
 https://taan1el.github.io/Multimeedia_eksam/
-
-## Märkus
-
-- Vormide reaalne saatmine (kontakti e-kiri, tellimuste salvestamine) toimub
-  **Moodul 4** back-endis.
