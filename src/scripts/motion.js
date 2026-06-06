@@ -35,7 +35,10 @@ function animateHeroVideo() {
   const video = document.querySelector(".hero__video");
   if (!hero || !video?.dataset.src) return () => {};
 
-  video.src = video.dataset.src;
+  // data-src is a root-absolute path that Vite does not rewrite, so prefix the
+  // build base (e.g. /Multimeedia_eksam/) or the video 404s on the Pages subpath.
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  video.src = video.dataset.src.startsWith("/") ? base + video.dataset.src : video.dataset.src;
   video.muted = true;
   video.load();
   video.pause();
