@@ -1,0 +1,39 @@
+{% extends "layouts/base.njk" %}
+{% set title = "Tarne" %}
+{% set description = "Slow Pour tarneinfo — tarneviisid, hinnad ja tarneajad üle Eesti." %}
+{% block content %}
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="eyebrow eyebrow--on-dark">Klienditeenindus</span>
+    <h1 class="page-head__title">Tarne</h1>
+    <p class="page-head__sub">
+      Saadame Slow Pour kohvi üle Eesti. Pakime tellimuse hoolikalt ja anname iga saadetise teele värskelt röstitult.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap page-prose">
+    <h2>Tarneviisid ja hinnad</h2>
+    <ul>
+      <li>Pakiautomaat (Omniva / Itella SmartPost) — <span class="num">3,50 €</span></li>
+      <li>Kuller koju või kontorisse — <span class="num">5,90 €</span></li>
+      <li>Järeltulemine röstikojast (Roostiku 12, Tallinn) — tasuta</li>
+    </ul>
+
+    <h2>Tasuta tarne</h2>
+    <p>Tellimustele alates <span class="num">40 €</span> on pakiautomaadi tarne tasuta.</p>
+
+    <h2>Tarneaeg</h2>
+    <p>Pakime tellimuse 1–2 tööpäeva jooksul. Pakiautomaati jõuab saadetis tavaliselt 1–3 tööpäevaga, kuller 1–2 tööpäevaga. Värske röstimise tõttu võib tipphooajal lisanduda päev.</p>
+
+    <h2>Jälgimine</h2>
+    <p>Kui saadetis on teele antud, saadame e-postiga jälgimisnumbri.</p>
+
+    <h2>Küsimused tarne kohta?</h2>
+    <p>Kirjuta <a href="mailto:tere@slowpour.ee">tere@slowpour.ee</a> või helista <a class="num" href="tel:+37258948814">+372 5894 8814</a>.</p>
+  </div>
+</section>
+
+{% endblock %}
