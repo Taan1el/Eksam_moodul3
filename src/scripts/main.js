@@ -1,79 +1,58 @@
 // Slow Pour — frontend interactions.
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Base path (./ in dev, /Multimeedia_eksam/ in the production build) so asset
 // URLs built in JS resolve correctly whether hosted at root or a subpath.
 const BASE = import.meta.env.BASE_URL;
 const asset = (path) => `${BASE}${path.replace(/^\/+/, "")}`;
 
-// Animations run only when the user hasn't requested reduced motion.
-const ALLOW_MOTION = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let motionApi;
+let motionPromise;
 
 function revealOnScroll(target, vars = {}) {
-  if (!ALLOW_MOTION || !target) return;
-  gsap.from(target, {
-    opacity: 0, y: 56, scale: 0.96, duration: 0.85, ease: "power3.out",
-    scrollTrigger: { trigger: target, start: "top 88%" },
-    ...vars,
-  });
+  motionApi?.revealOnScroll(target, vars);
 }
+
 function revealCards(container) {
-  if (!ALLOW_MOTION || !container) return;
-  const cards = container.querySelectorAll(".coffee-card");
-  if (!cards.length) return;
-  // once + clearProps so cards always settle back to their natural grid
-  // position (no residual transform that could leave a card sitting lower).
-  gsap.from(cards, {
-    opacity: 0, y: 32, duration: 0.6, ease: "power3.out", stagger: 0.08,
-    clearProps: "transform,opacity",
-    scrollTrigger: { trigger: container, start: "top 92%", once: true },
-  });
+  motionApi?.revealCards(container);
 }
 
-function initHeroVideoScroll() {
-  const hero = document.querySelector(".hero");
-  const heroVideo = document.querySelector(".hero__video");
-  if (!hero || !heroVideo || !ALLOW_MOTION) return;
-
-  heroVideo.muted = true;
-  heroVideo.pause();
-
-  function bindScrollPlayback() {
-    if (!Number.isFinite(heroVideo.duration) || heroVideo.duration <= 0) return;
-
-    heroVideo.currentTime = 0;
-    gsap.to(heroVideo, {
-      currentTime: Math.max(heroVideo.duration - 0.05, 0),
-      ease: "none",
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom+=35% top",
-        scrub: true,
-      },
-    });
+function loadMotion() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return Promise.resolve();
   }
+  motionPromise ??= import("./motion.js").then((motion) => {
+    motionApi = motion;
+    motion.initMotion();
+  });
+  return motionPromise;
+}
 
-  if (heroVideo.readyState >= 1) {
-    bindScrollPlayback();
-    return;
-  }
+window.addEventListener("scroll", loadMotion, { once: true, passive: true });
+window.addEventListener("pointerdown", loadMotion, { once: true, passive: true });
+window.addEventListener("keydown", loadMotion, { once: true });
 
-  heroVideo.addEventListener("loadedmetadata", bindScrollPlayback, { once: true });
+if (new URLSearchParams(location.search).get("motion") === "on") {
+  loadMotion();
 }
 
 /* ---- Dark-mode toggle (persists choice; defaults to OS preference) -------- */
 const toggle = document.getElementById("theme-toggle");
 const saved = localStorage.getItem("theme");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+function syncThemeSources(isDark) {
+  document.querySelectorAll('[data-theme-source="dark"]').forEach((source) => {
+    source.media = isDark ? "all" : "not all";
+  });
+}
+
 if (saved === "dark" || (!saved && prefersDark)) document.documentElement.classList.add("dark");
+if (saved) syncThemeSources(saved === "dark");
 
 toggle?.addEventListener("click", () => {
   const isDark = document.documentElement.classList.toggle("dark");
   localStorage.setItem("theme", isDark ? "dark" : "light");
+  syncThemeSources(isDark);
   console.log(`[theme] -> ${isDark ? "dark" : "light"}`);
 });
 
@@ -237,7 +216,7 @@ export function coffeeCard(c) {
       <a class="coffee-card__media" href="detail.html?id=${c.id}" aria-label="Vaata: ${c.nimi}">
         <picture>
           <source srcset="${asset(`assets/img/${img}.avif`)}" type="image/avif" />
-          <img src="${asset(`assets/img/${img}.webp`)}" alt="${c.nimi} — kohvipakk" loading="lazy" width="400" height="400" />
+          <img src="${asset(`assets/img/${img}.webp`)}" alt="${c.nimi} — kohvipakk" loading="lazy" decoding="async" width="400" height="400" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 900px) calc(50vw - 36px), 400px" />
         </picture>
       </a>
       <div class="coffee-card__body">
@@ -349,7 +328,7 @@ function initCarousel(nimi, slides) {
     console.log(`[carousel] slide ${i + 1}/${slides.length}`);
   }
   thumbs.innerHTML = slides
-    .map((s, n) => `<button type="button" class="carousel__thumb" data-i="${n}" aria-label="Pilt ${n + 1}"><img src="${asset(`assets/img/${s}.webp`)}" alt="" /></button>`)
+    .map((s, n) => `<button type="button" class="carousel__thumb" data-i="${n}" aria-label="Pilt ${n + 1}"><img src="${asset(`assets/img/${s}.webp`)}" alt="" loading="lazy" decoding="async" width="72" height="72" /></button>`)
     .join("");
   thumbs.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => show(Number(b.dataset.i))));
   document.querySelector("[data-carousel-prev]").addEventListener("click", () => show(i - 1));
@@ -494,43 +473,3 @@ async function initOrder() {
   render();
 }
 initOrder();
-
-/* ---- Page-load + scroll animations (GSAP + ScrollTrigger) ---------------- */
-function initAnimations() {
-  if (!ALLOW_MOTION) return;
-  initHeroVideoScroll();
-  const hero = document.querySelector(".hero");
-  const heroContent = document.querySelector(".hero__content");
-  const heroScrim = document.querySelector(".hero__scrim");
-  const heroBits = document.querySelectorAll(".hero__content > *");
-  if (heroBits.length) {
-    gsap.from(heroBits, { opacity: 0, y: 24, duration: 0.7, ease: "power2.out", stagger: 0.1 });
-  }
-  if (document.querySelector(".hero__media")) {
-    gsap.to(".hero__media", {
-      yPercent: 18,
-      scale: 1.08,
-      ease: "none",
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
-    });
-  }
-  if (heroContent && hero) {
-    gsap.to(heroContent, {
-      yPercent: -18,
-      opacity: 0.38,
-      ease: "none",
-      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
-    });
-  }
-  if (heroScrim && hero) {
-    gsap.to(heroScrim, {
-      opacity: 0.72,
-      ease: "none",
-      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
-    });
-  }
-  document
-    .querySelectorAll(".section-head, .mission__text, .mission__media, .events, .contact__info, .contact__form-wrap, .order__form, .order-summary")
-    .forEach((el) => revealOnScroll(el));
-}
-initAnimations();
