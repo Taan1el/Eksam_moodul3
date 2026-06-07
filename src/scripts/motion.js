@@ -110,15 +110,14 @@ export function initMotion() {
       });
     }
 
+    // Static, always-present sections. Dynamic content (coffee cards, the detail
+    // view) is revealed by main.js right after it is injected — see revealCards /
+    // revealOnScroll there — so it is intentionally not scanned here.
     document
       .querySelectorAll(
-        ".section-head, .mission__text, .mission__media, .events, .contact__info, .contact__form-wrap, .order__form, .order-summary, .detail__media, .detail__info",
+        ".section-head, .mission__text, .mission__media, .events, .contact__info, .contact__form-wrap, .order__form, .order-summary",
       )
       .forEach((element) => revealOnScroll(element));
-
-    document
-      .querySelectorAll(".card-grid, .popular__track")
-      .forEach((container) => revealCards(container));
   });
 
   motion.add(

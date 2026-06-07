@@ -8,12 +8,17 @@ const asset = (path) => `${BASE}${path.replace(/^\/+/, "")}`;
 let motionApi;
 let motionPromise;
 
+// Called right after dynamic content is injected. Ensure motion is loaded, then
+// reveal that specific target — so JS-rendered cards never miss their animation
+// (avoids a race where the global scan runs before the cards exist).
 function revealOnScroll(target, vars = {}) {
-  motionApi?.revealOnScroll(target, vars);
+  if (!target) return;
+  loadMotion().then(() => motionApi?.revealOnScroll(target, vars));
 }
 
 function revealCards(container) {
-  motionApi?.revealCards(container);
+  if (!container) return;
+  loadMotion().then(() => motionApi?.revealCards(container));
 }
 
 function loadMotion() {
