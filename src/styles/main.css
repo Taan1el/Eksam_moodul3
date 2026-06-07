@@ -212,7 +212,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: min(300px, calc(100vw - 32px));
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
   z-index: 60;
   padding: var(--space-5);
   background: var(--bg-surface);
@@ -222,19 +224,20 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 }
 .cart-panel__empty { color: var(--fg-2); font-size: var(--caption); margin: 0; }
 .cart-panel__title { font-family: var(--font-display); font-size: var(--h4); color: var(--fg-1); margin: 0 0 var(--space-3); }
-.cart-line { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
-.cart-line__info { display: flex; flex-direction: column; gap: 2px; }
+.cart-line { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2) var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--border-hairline); }
+.cart-line__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .cart-line__name { font-weight: var(--weight-semibold); color: var(--fg-1); }
 .cart-line__meta { font-size: var(--caption); color: var(--fg-2); }
 .cart-line__remove {
   border: none; background: transparent; cursor: pointer;
   font-size: 20px; line-height: 1; color: var(--fg-2);
-  padding: 0 2px;
+  padding: 0 2px; justify-self: end;
 }
 .cart-line__remove:hover { color: var(--sp-danger); }
-.cart-line__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: var(--space-4) 0; }
+.cart-line__row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 .cart-line__row .qty__input { min-width: 28px; text-align: center; }
 .cart-line__total { font-weight: var(--weight-bold); color: var(--sp-primary-text); }
+.cart-panel__sum { display: flex; align-items: center; justify-content: space-between; font-weight: var(--weight-bold); color: var(--fg-1); margin: var(--space-4) 0 var(--space-3); }
 .cart-panel__checkout { width: 100%; justify-content: center; }
 
 /* Skip link (accessibility) */
@@ -252,6 +255,15 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   transition: top 0.15s ease;
 }
 .skip-link:focus { top: var(--space-2); }
+
+/* Visually hidden but available to screen readers / heading outline. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0); clip-path: inset(50%);
+  overflow: hidden; white-space: nowrap;
+}
 
 /* ---- Hero ----------------------------------------------------------------- */
 .hero {
@@ -523,6 +535,10 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 .field-inline select:focus-visible { outline: 2px solid var(--sp-primary); outline-offset: 1px; }
 
 /* ---- Detail page (Detailleht) --------------------------------------------- */
+/* Reserve space for JS-injected detail + related content to avoid layout shift (CLS). */
+.detail-section { min-height: 840px; }
+#related-grid { min-height: 580px; }
+#coffee-grid.is-loading { min-height: 1760px; } /* reserve while 8 cards load (3-col) */
 .detail { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); align-items: start; }
 .detail__tags { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
 .detail__name { font-family: var(--font-display); font-size: var(--h-display); font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
@@ -639,6 +655,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 /* ---- Responsive (full pass) ----------------------------------------------- */
 @media (max-width: 900px) {
   .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-section { min-height: 1520px; }
+  #related-grid { min-height: 1080px; } /* 3 cards in 2 columns */
+  #coffee-grid.is-loading { min-height: 2120px; } /* 8 cards, 2-col */
   .mission { grid-template-columns: 1fr; gap: var(--space-10); }
   .detail { grid-template-columns: 1fr; gap: var(--space-8); }
   .detail__name { font-size: var(--h1); }
@@ -668,6 +687,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
   }
   .site-nav.nav-open .nav-menu ul { flex-direction: column; gap: var(--space-4); }
   .card-grid { grid-template-columns: 1fr; }
+  .detail-section { min-height: 1280px; }
+  #related-grid { min-height: 1580px; } /* 3 full-width cards stacked */
+  #coffee-grid.is-loading { min-height: 4220px; } /* 8 full-width cards stacked */
   .section-head { flex-direction: column; align-items: flex-start; }
   .hero__title { font-size: 44px; }
   .hero__actions {

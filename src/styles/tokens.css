@@ -185,7 +185,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-a, .sp-link { color: var(--sp-primary); text-decoration: none; }
+a, .sp-link { color: var(--sp-primary-text); text-decoration: none; }
 
 @media (max-width: 600px) {
   :root {

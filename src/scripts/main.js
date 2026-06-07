@@ -31,6 +31,12 @@ window.addEventListener("scroll", loadMotion, { once: true, passive: true });
 window.addEventListener("pointerdown", loadMotion, { once: true, passive: true });
 window.addEventListener("keydown", loadMotion, { once: true });
 
+// Also load once the page is idle, so the reveal/parallax animations run without
+// requiring the visitor to interact first. Deferred to protect first-paint perf.
+const idleLoadMotion = () => (window.requestIdleCallback || ((cb) => setTimeout(cb, 200)))(loadMotion);
+if (document.readyState === "complete") idleLoadMotion();
+else window.addEventListener("load", idleLoadMotion, { once: true });
+
 if (new URLSearchParams(location.search).get("motion") === "on") {
   loadMotion();
 }
@@ -56,7 +62,7 @@ toggle?.addEventListener("click", () => {
   console.log(`[theme] -> ${isDark ? "dark" : "light"}`);
 });
 
-/* ---- Cart (single coffee type, adjustable quantity; localStorage) -------- */
+/* ---- Cart (multiple coffee types, each with its own quantity; localStorage) */
 const CART_KEY = "slowpour-cart";
 const cartEl = document.getElementById("cart");
 const cartToggle = document.getElementById("cart-toggle");
@@ -64,34 +70,39 @@ const cartPanel = document.getElementById("cart-panel");
 const cartCount = document.getElementById("cart-count");
 let cartCoffees = [];
 
+// Cart is an array of lines: [{ id, qty }]. Old single-object format is migrated.
 function readCart() {
   try {
-    const c = JSON.parse(localStorage.getItem(CART_KEY));
-    return c && c.id && c.qty > 0 ? c : null;
+    const raw = JSON.parse(localStorage.getItem(CART_KEY));
+    const arr = Array.isArray(raw) ? raw : raw && raw.id ? [raw] : [];
+    return arr.filter((l) => l && l.id && l.qty > 0);
   } catch {
-    return null;
+    return [];
   }
 }
 function writeCart(cart) {
-  if (cart && cart.qty > 0) localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  const clean = cart.filter((l) => l.qty > 0);
+  if (clean.length) localStorage.setItem(CART_KEY, JSON.stringify(clean));
   else localStorage.removeItem(CART_KEY);
   renderCart();
 }
 
-// Single coffee type: a different coffee replaces the line; the same one adds up.
+// Adding an existing coffee bumps its quantity; a new coffee adds another line.
 export function addToCart(id, qty = 1) {
-  const current = readCart();
-  const next = current && current.id === id ? { id, qty: current.qty + qty } : { id, qty };
-  writeCart(next);
+  const cart = readCart();
+  const line = cart.find((l) => l.id === id);
+  if (line) line.qty += qty;
+  else cart.push({ id, qty });
+  writeCart(cart);
   // Defer so this same click finishes bubbling before the panel opens —
   // otherwise the document outside-click handler closes it immediately.
   setTimeout(openCart, 0);
-  console.log(`[cart] add id=${id} -> qty ${next.qty}`);
+  console.log(`[cart] add id=${id} -> ${cart.length} line(s)`);
 }
 
 function renderCart() {
   const cart = readCart();
-  const count = cart ? cart.qty : 0;
+  const count = cart.reduce((n, l) => n + l.qty, 0);
   if (cartCount) {
     cartCount.textContent = count;
     cartCount.hidden = count === 0;
@@ -100,30 +111,39 @@ function renderCart() {
     cartToggle.setAttribute("aria-label", count ? `Ava ostukorv (${count})` : "Ava ostukorv");
   }
   if (!cartPanel) return;
-  const c = cart && cartCoffees.find((x) => x.id === cart.id);
-  if (!cart || !c) {
+
+  const lines = cart
+    .map((l) => ({ ...l, c: cartCoffees.find((x) => x.id === l.id) }))
+    .filter((l) => l.c);
+  if (!lines.length) {
     cartPanel.innerHTML = `<p class="cart-panel__empty">Korv on tühi.</p>`;
     return;
   }
-  const lineTotal = (Number(c.hind) * cart.qty).toFixed(2);
+  const grand = lines.reduce((s, l) => s + Number(l.c.hind) * l.qty, 0).toFixed(2);
   cartPanel.innerHTML = `
     <p class="cart-panel__title">Sinu korv</p>
-    <div class="cart-line">
+    ${lines
+      .map(
+        (l) => `
+    <div class="cart-line" data-line="${l.id}">
       <div class="cart-line__info">
-        <span class="cart-line__name">${c.nimi}</span>
-        <span class="cart-line__meta num">€${Number(c.hind).toFixed(2)} · ${c.kaal}</span>
+        <span class="cart-line__name">${l.c.nimi}</span>
+        <span class="cart-line__meta num">€${Number(l.c.hind).toFixed(2)} · ${l.c.kaal}</span>
       </div>
-      <button type="button" class="cart-line__remove" data-cart-remove aria-label="Eemalda korvist">×</button>
-    </div>
-    <div class="cart-line__row">
-      <div class="qty">
-        <button type="button" class="qty__btn" data-cart-qty="-1" aria-label="Vähenda kogust">−</button>
-        <span class="qty__input num" aria-live="polite">${cart.qty}</span>
-        <button type="button" class="qty__btn" data-cart-qty="1" aria-label="Suurenda kogust">+</button>
+      <button type="button" class="cart-line__remove" data-cart-remove="${l.id}" aria-label="Eemalda korvist: ${l.c.nimi}">×</button>
+      <div class="cart-line__row">
+        <div class="qty">
+          <button type="button" class="qty__btn" data-cart-qty="-1" data-id="${l.id}" aria-label="Vähenda kogust">−</button>
+          <span class="qty__input num" aria-live="polite">${l.qty}</span>
+          <button type="button" class="qty__btn" data-cart-qty="1" data-id="${l.id}" aria-label="Suurenda kogust">+</button>
+        </div>
+        <span class="cart-line__total num">€${(Number(l.c.hind) * l.qty).toFixed(2)}</span>
       </div>
-      <span class="cart-line__total num">€${lineTotal}</span>
-    </div>
-    <a class="btn btn--primary btn--sm cart-panel__checkout" href="tellimus.html?id=${c.id}">Vormista tellimus →</a>`;
+    </div>`
+      )
+      .join("")}
+    <div class="cart-panel__sum"><span>Kokku</span><span class="num">€${grand}</span></div>
+    <a class="btn btn--primary btn--sm cart-panel__checkout" href="tellimus.html">Vormista tellimus →</a>`;
 }
 
 function openCart() {
@@ -150,10 +170,13 @@ async function initCart() {
     const step = e.target.closest("[data-cart-qty]");
     const remove = e.target.closest("[data-cart-remove]");
     const cart = readCart();
-    if (step && cart) {
-      writeCart({ id: cart.id, qty: Math.max(0, cart.qty + Number(step.dataset.cartQty)) });
+    if (step) {
+      const id = Number(step.dataset.id);
+      const line = cart.find((l) => l.id === id);
+      if (line) line.qty = Math.max(0, line.qty + Number(step.dataset.cartQty));
+      writeCart(cart);
     } else if (remove) {
-      writeCart(null);
+      writeCart(cart.filter((l) => l.id !== Number(remove.dataset.cartRemove)));
     }
   });
   document.addEventListener("click", (e) => {
@@ -297,6 +320,9 @@ async function initCatalog() {
     if (sort === "asc") list = [...list].sort((a, b) => a.hind - b.hind);
     if (sort === "desc") list = [...list].sort((a, b) => b.hind - a.hind);
     grid.innerHTML = list.map(coffeeCard).join("");
+    // Drop the initial-load height reserve once real cards are in (keeps the
+    // first paint from shifting the footer, without bloating filtered views).
+    grid.classList.remove("is-loading");
     countEl.textContent = `${list.length} toodet`;
     emptyEl.hidden = list.length > 0;
     console.log(`[catalog] paritolu=${par || "*"} rostitase=${roast || "*"} sort=${sort || "-"} -> ${list.length}`);
