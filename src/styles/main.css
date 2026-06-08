@@ -469,6 +469,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 .page-prose ul { color: var(--fg-2); line-height: var(--leading-loose); margin: 0 0 var(--space-4) var(--space-5); list-style: disc; }
 .page-prose ul li { margin-bottom: var(--space-2); }
 .page-prose a { color: var(--sp-primary-text); text-decoration: underline; }
+.map { margin: var(--space-5) 0 var(--space-4); }
+.map__frame { width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--border-hairline); border-radius: var(--radius-base); display: block; }
+.map__cap { margin-top: var(--space-2); font-size: var(--caption); }
 .faq { display: flex; flex-direction: column; gap: var(--space-3); }
 .faq__item {
   border: 1px solid var(--border-hairline);
