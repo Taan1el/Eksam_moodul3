@@ -174,6 +174,11 @@ async function initCart() {
   cartPanel.addEventListener("click", (e) => {
     const step = e.target.closest("[data-cart-qty]");
     const remove = e.target.closest("[data-cart-remove]");
+    if (!step && !remove) return;
+    // renderCart() rebuilds the panel and detaches this button, so the click
+    // would reach the document handler with a detached target and wrongly close
+    // the cart. Stop it here — control clicks stay inside the panel.
+    e.stopPropagation();
     const cart = readCart();
     if (step) {
       const id = Number(step.dataset.id);
@@ -234,11 +239,16 @@ function roastImage(rostitase) {
   return "medium-roast";
 }
 
-/* ---- Coffee card markup (shared by featured + popular + list) ------------- */
-export function coffeeCard(c) {
+/* ---- Coffee card markup (shared by featured + popular + list) -------------
+   opts.cart adds a "Lisa korvi" button above the "Vaata" row. Guarded with
+   `=== true` so Array.map's index argument (a number) never enables it.        */
+export function coffeeCard(c, opts) {
   const img = roastImage(c.rostitase);
   const origin = (c.paritolu || "").split(",")[0];
   const price = Number(c.hind).toFixed(2);
+  const addBtn = opts && opts.cart === true
+    ? `<button type="button" class="btn btn--primary btn--sm coffee-card__add" data-add-cart="${c.id}" aria-label="Lisa korvi: ${c.nimi}">Lisa korvi</button>`
+    : "";
   return `
     <article class="coffee-card">
       <a class="coffee-card__media" href="detail.html?id=${c.id}" aria-label="Vaata: ${c.nimi}">
@@ -254,6 +264,7 @@ export function coffeeCard(c) {
         </div>
         <h3 class="coffee-card__name">${c.nimi}</h3>
         <p class="coffee-card__origin">${c.paritolu}</p>
+        ${addBtn}
         <div class="coffee-card__foot">
           <span class="coffee-card__price num">€${price}</span>
           <a class="btn btn--outline btn--sm" href="detail.html?id=${c.id}">Vaata →</a>
@@ -324,7 +335,7 @@ async function initCatalog() {
     let list = all.filter((c) => (!par || c.paritolu === par) && (!roast || c.rostitase === roast));
     if (sort === "asc") list = [...list].sort((a, b) => a.hind - b.hind);
     if (sort === "desc") list = [...list].sort((a, b) => b.hind - a.hind);
-    grid.innerHTML = list.map(coffeeCard).join("");
+    grid.innerHTML = list.map((c) => coffeeCard(c, { cart: true })).join("");
     // Drop the initial-load height reserve once real cards are in (keeps the
     // first paint from shifting the footer, without bloating filtered views).
     grid.classList.remove("is-loading");
@@ -332,6 +343,11 @@ async function initCatalog() {
     emptyEl.hidden = list.length > 0;
     console.log(`[catalog] paritolu=${par || "*"} rostitase=${roast || "*"} sort=${sort || "-"} -> ${list.length}`);
   }
+  // Delegated "Lisa korvi" — survives grid re-renders on filter/sort.
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add-cart]");
+    if (btn) addToCart(Number(btn.dataset.addCart), 1);
+  });
   [selPar, selRoast, selSort].forEach((el) => el.addEventListener("change", apply));
   resetBtn.addEventListener("click", () => {
     selPar.value = "";

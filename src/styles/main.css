@@ -377,6 +377,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-v
 .coffee-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .coffee-card__name { font-family: var(--font-display); font-size: var(--h4); font-weight: var(--weight-semibold); color: var(--fg-1); }
 .coffee-card__origin { font-size: var(--caption); color: var(--fg-2); }
+.coffee-card__add { width: 100%; justify-content: center; margin-top: var(--space-2); }
 .coffee-card__foot { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-2); }
 .coffee-card__price { font-size: var(--h4); font-weight: var(--weight-bold); color: var(--sp-primary-text); }
 
