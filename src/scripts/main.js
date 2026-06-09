@@ -461,7 +461,7 @@ function initContact() {
 }
 initContact();
 
-/* ---- Order page (Tellimus): coffee picker + qty + live summary ----------- */
+/* ---- Order page (Tellimus): cart-driven summary + picker to add more ------ */
 async function initOrder() {
   const form = document.getElementById("order-form");
   if (!form) return;
@@ -475,39 +475,67 @@ async function initOrder() {
   const preId = Number(getParam("id"));
   if (preId && all.some((c) => c.id === preId)) select.value = String(preId);
 
+  // Linked here from a product ("Telli" CTA) with an empty cart? Seed that line
+  // so the summary isn't empty. Does not touch the cart if it already has items.
+  if (preId && all.some((c) => c.id === preId)) {
+    const cart = readCart();
+    if (!cart.some((l) => l.id === preId)) writeCart([...cart, { id: preId, qty: 1 }]);
+  }
+
   const qtyInput = form.elements["qty"];
   const FREE_SHIP = 35;
   const SHIP = 3.5;
-  const el = (id) => document.getElementById(id);
+  const body = document.getElementById("order-summary-body");
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  function render() {
-    const c = all.find((x) => x.id === Number(select.value)) || all[0];
-    const qty = Math.max(1, Number(qtyInput.value) || 1);
-    const unit = Number(c.hind);
-    const sub = unit * qty;
+  // The order summary mirrors the cart: one row per coffee, plus shipping/total.
+  function renderSummary() {
+    const lines = readCart()
+      .map((l) => ({ ...l, c: all.find((x) => x.id === l.id) }))
+      .filter((l) => l.c);
+    if (!lines.length) {
+      body.innerHTML = `<p class="order-summary__empty">Korv on tühi. Vali kohvi ja vajuta „Lisa korvi".</p>`;
+      submitBtn.disabled = true;
+      return;
+    }
+    submitBtn.disabled = false;
+    const sub = lines.reduce((s, l) => s + Number(l.c.hind) * l.qty, 0);
     const ship = sub >= FREE_SHIP ? 0 : SHIP;
-    el("sum-item").textContent = c.nimi;
-    el("sum-qty").textContent = qty;
-    el("sum-unit").textContent = `€${unit.toFixed(2)}`;
-    el("sum-sub").textContent = `€${sub.toFixed(2)}`;
-    el("sum-ship").textContent = ship === 0 ? "Tasuta" : `€${ship.toFixed(2)}`;
-    el("sum-total").textContent = `€${(sub + ship).toFixed(2)}`;
-    console.log(`[order] ${c.nimi} x${qty} sub=${sub.toFixed(2)} ship=${ship} total=${(sub + ship).toFixed(2)}`);
+    body.innerHTML =
+      lines
+        .map(
+          (l) => `
+      <div class="order-summary__row">
+        <span>${l.c.nimi} <span class="muted">× ${l.qty}</span></span>
+        <span class="num">€${(Number(l.c.hind) * l.qty).toFixed(2)}</span>
+      </div>`
+        )
+        .join("") +
+      `<div class="order-summary__row"><span>Vahesumma</span><span class="num">€${sub.toFixed(2)}</span></div>
+       <div class="order-summary__row"><span>Tarne</span><span class="num">${ship === 0 ? "Tasuta" : "€" + ship.toFixed(2)}</span></div>
+       <div class="order-summary__row order-summary__total"><span>Kokku</span><span class="num">€${(sub + ship).toFixed(2)}</span></div>`;
+    console.log(`[order] summary ${lines.length} line(s) sub=${sub.toFixed(2)} ship=${ship}`);
   }
 
-  select.addEventListener("change", render);
-  qtyInput.addEventListener("input", render);
-  document.getElementById("order-add-cart")?.addEventListener("click", () =>
-    addToCart(Number(select.value), Math.max(1, Number(qtyInput.value) || 1))
-  );
+  // "Lisa korvi" adds the picked coffee+qty to the cart, then refreshes summary.
+  document.getElementById("order-add-cart")?.addEventListener("click", () => {
+    const id = Number(select.value);
+    const qty = Math.max(1, Number(qtyInput.value) || 1);
+    const cart = readCart();
+    const line = cart.find((l) => l.id === id);
+    if (line) line.qty += qty;
+    else cart.push({ id, qty });
+    writeCart(cart);
+    renderSummary();
+  });
   form.querySelectorAll("[data-qty]").forEach((btn) =>
     btn.addEventListener("click", () => {
       qtyInput.value = Math.max(1, (Number(qtyInput.value) || 1) + Number(btn.dataset.qty));
-      render();
     })
   );
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (!readCart().length) return; // nothing to order
     let ok = true;
     form.querySelectorAll("[required]").forEach((inp) => {
       const valid = inp.value.trim().length > 0;
@@ -515,8 +543,13 @@ async function initOrder() {
       setFieldError(inp, valid ? "" : "Kohustuslik väli.");
     });
     console.log(`[order] submit valid=${ok}`);
-    if (ok) { form.hidden = true; el("order-success").hidden = false; }
+    if (ok) {
+      writeCart([]); // order placed → empty the cart
+      renderSummary();
+      form.hidden = true;
+      document.getElementById("order-success").hidden = false;
+    }
   });
-  render();
+  renderSummary();
 }
 initOrder();

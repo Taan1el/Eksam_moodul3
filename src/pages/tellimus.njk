@@ -58,11 +58,7 @@
 
     <aside class="order-summary" aria-label="Tellimuse kokkuvõte">
       <h2 class="order-summary__title">Kokkuvõte</h2>
-      <div class="order-summary__row"><span id="sum-item">—</span><span>× <span class="num" id="sum-qty">1</span></span></div>
-      <div class="order-summary__row muted"><span>Ühiku hind</span><span class="num" id="sum-unit">€0.00</span></div>
-      <div class="order-summary__row"><span>Vahesumma</span><span class="num" id="sum-sub">€0.00</span></div>
-      <div class="order-summary__row"><span>Tarne</span><span class="num" id="sum-ship">€3.50</span></div>
-      <div class="order-summary__row order-summary__total"><span>Kokku</span><span class="num" id="sum-total">€0.00</span></div>
+      <div id="order-summary-body" aria-live="polite"></div>
       <p class="order-summary__note">Tasuta tarne tellimustelt 35 €.</p>
       <button type="button" class="btn btn--outline order-summary__add" id="order-add-cart">Lisa korvi</button>
       <div id="order-success" class="form__success" role="status" hidden>
